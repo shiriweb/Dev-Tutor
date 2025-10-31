@@ -1,20 +1,20 @@
-# POST http://localhost:3000/api/auth/register
-# Content-Type: application/json
-
-# {
-#     "firstName": "Krish",
-#     "lastName": "Neupane",
-#     "email": "krish.neupane@gmail.com",
-#     "password": "password123"
-# }
-
-POST http://localhost:3000/api/auth/login
+POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 {
-    "email": "krish.neupane@gmail.com",
-    "password": "password123"
+    "firstName": "Krish",
+    "lastName": "Neupane",
+    "email": "ss.neupane@gmail.com",
+    "password": "pah"
 }
+
+# POST http://localhost:3000/api/auth/login
+# Content-Type: application/json
+
+# {
+#     "email": "krish.neupane@gmail.com",
+#     "password": "password123"
+# }
 
 # POST http://localhost:3000/api/auth/logout
 # Content-Type: application/json

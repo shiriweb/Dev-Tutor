@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import config from "./config.js";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
 const app = express();
 
 // middleware
@@ -23,6 +24,7 @@ connectDB();
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/chats", chatRoutes);
 
 app.listen(config.PORT, () => {
   console.log(`Server is running on port ${config.PORT}`);

@@ -9,7 +9,9 @@ export const validateRegister = (req, res, next) => {
     return res.status(400).json({ error: "Invalid email format" });
 
   if (password.length < 6)
-    return res.status(400).json({ error: "Password must be at least 6 characters" });
+    return res
+      .status(400)
+      .json({ error: "Password must be at least 6 characters" });
 
   next();
 };

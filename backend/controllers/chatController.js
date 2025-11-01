@@ -1,3 +1,4 @@
+import express from "express";
 import config from "../config.js";
 import { Chat } from "../models/Chat.js";
 
@@ -6,15 +7,15 @@ console.log(API_KEY);
 
 export const createChat = async (req, res) => {
   const { userId, topic, content } = req.body;
+
   if (!userId || !topic || !content || content.trim() === "") {
     return res
       .status(400)
-      .json({ error: "userId, topic, and content are required" });
+      .json({ error: "Userid ,topic or the contente is missing " });
   }
 
   try {
-    // Create a new chat with the first user message
-    const newChat = await Chat.create({
+    const newChat = await new Chat({
       userId,
       topic,
       messages: [
@@ -24,10 +25,8 @@ export const createChat = async (req, res) => {
         },
       ],
     });
-
-    res.status(201).json(newChat);
+    await res.status(201).json(newChat);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to create chat" });
+    return res.status(500).json({ error: "Failed to create chat" });
   }
 };

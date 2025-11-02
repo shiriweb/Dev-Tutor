@@ -1,9 +1,9 @@
-import { User } from "../models/User.js";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-import config from "../config.js";
+const { User } = require("../models/User");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const config = require("../config");
 
-export const register = async (req, res) => {
+const register = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
@@ -30,7 +30,7 @@ export const register = async (req, res) => {
   }
 };
 
-export const login = async (req, res) => {
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -60,7 +60,7 @@ export const login = async (req, res) => {
   }
 };
 
-export const logout = (_, res) => {
+const logout = (_, res) => {
   try {
     res.clearCookie("jwt");
     return res.status(200).json({ message: "User logged out successfully" });
@@ -70,3 +70,5 @@ export const logout = (_, res) => {
       .json({ error: "Server error, please try again later" });
   }
 };
+
+module.exports = { register, login, logout };

@@ -1,5 +1,4 @@
-import dotenv from "dotenv";
-
+const dotenv = require("dotenv");
 dotenv.config();
 
 const JWT_SECRET_PASSWORD = process.env.JWT_SECRET_PASSWORD;
@@ -8,7 +7,7 @@ const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV;
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-export default {
+module.exports = {
   JWT_SECRET_PASSWORD,
   MONGODB_URI,
   PORT,

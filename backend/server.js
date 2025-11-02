@@ -1,12 +1,13 @@
-import express from "express";
-import mongoose from "mongoose";
-import config from "./config.js";
-import cookieParser from "cookie-parser";
-import authRoutes from "./routes/authRoutes.js";
-import chatRoutes from "./routes/chatRoutes.js";
+const express = require("express");
+const mongoose = require("mongoose");
+const config = require("./config");
+const cookieParser = require("cookie-parser");
+const authRoutes = require("./routes/authRoutes");
+const chatRoutes = require("./routes/chatRoutes");
+
 const app = express();
 
-// middleware
+// Middleware
 app.use(express.json());
 app.use(cookieParser());
 
@@ -26,6 +27,7 @@ connectDB();
 app.use("/api/auth", authRoutes);
 app.use("/api/chats", chatRoutes);
 
+// Start server
 app.listen(config.PORT, () => {
   console.log(`Server is running on port ${config.PORT}`);
 });

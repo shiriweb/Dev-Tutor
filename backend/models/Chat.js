@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const messageSchema = new mongoose.Schema({
   sender: {
@@ -41,4 +41,5 @@ chatSchema.set("toJSON", {
   },
 });
 
-export const Chat = mongoose.model("Chat", chatSchema);
+const Chat = mongoose.model("Chat", chatSchema);
+module.exports = { Chat };

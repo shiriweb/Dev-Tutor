@@ -4,23 +4,28 @@ const config = require("./config");
 const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/authRoutes");
 const chatRoutes = require("./routes/chatRoutes");
-
+const cors = require("cors");
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors());
 
 // MONGODB CONNECTION
 const connectDB = async () => {
   try {
-    await mongoose.connect(config.MONGODB_URI);
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
     console.log("Connected to MongoDB");
   } catch (error) {
     console.log("MongoDB connection error", error);
     process.exit(1);
   }
 };
+
 connectDB();
 
 // Routes

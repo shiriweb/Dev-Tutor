@@ -5,7 +5,5 @@ const { createChat } = require("../controllers/chatController");
 const router = express.Router();
 
 router.post("/", createChat);
-// router.get("/", getChat);
-// router.post("/:id/message", addMessageToChat);
 
 module.exports = router;

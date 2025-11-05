@@ -16,31 +16,31 @@ const messageSchema = new mongoose.Schema({
   },
 });
 
-const chatSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+const chatSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    title: {
+      type: String,
+      default: "",
+    },
+    topic: {
+      type: String,
+      enum: ["JavaScript", "React", "Python", "HTML/CSS"],
+      required: true,
+    },
+    messages: [messageSchema],
   },
-  title: {
-    type: String,
-    default: "",
-  },
-  topic: {
-    type: String,
-    enum: ["JavaScript", "React", "Python", "HTML/CSS"],
-    required: true,
-  },
-  messages: [messageSchema],
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
+
+// index for faster queries
+chatSchema.index({ userId: 1, topic: 1 });
 
 const Chat = mongoose.model("Chat", chatSchema);
 module.exports = { Chat };

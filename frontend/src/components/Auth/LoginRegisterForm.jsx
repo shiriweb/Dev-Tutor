@@ -61,10 +61,10 @@ const LoginRegisterForm = ({ setToken }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-teal-50 p-4">
+    <div className="flex items-center justify-center min-h-screen bg-teal-50 p-2 sm:p-4">
       <form
         onSubmit={formSubmission}
-        className="w-full max-w-xs bg-white p-6 rounded-2xl shadow-xl space-y-4"
+        className="w-full sm:max-w-xs md:max-w-sm lg:max-w-xs lg:py-7 bg-white p-6 rounded-none sm:rounded-2xl shadow-none sm:shadow-xl space-y-3"
       >
         <div className="text-center mb-3">
           <p className="text-2xl font-bold text-teal-700 tracking-wide">

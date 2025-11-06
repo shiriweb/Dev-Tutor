@@ -32,7 +32,6 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Desktop Buttons */}
         <div className="flex space-x-4 ml-auto mr-2 font-semibold lg:flex sm:ml-auto sm:gap-x-2)">
           <button className="text-white hover:bg-white hover:text-teal-700">
             Log In
@@ -42,7 +41,7 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Mobile Hamburger */}
+        {/* Other device layout */}
         <div className="lg:hidden ml-auto">
           <button
             onClick={() => setIsOpen(!isOpen)}

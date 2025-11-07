@@ -1,5 +1,6 @@
-const config = require("../config.js");
+const config = require("../config/config.js");
 const jwt = require("jsonwebtoken");
+
 function userMiddleware(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer")) {
@@ -11,6 +12,9 @@ function userMiddleware(req, res, next) {
   try {
     const decoded = jwt.verify(token, config.JWT_SECRET_PASSWORD);
     req.userId = decoded.id;
+    console.log("Token received:", token);
+    console.log("JWT secret:", config.JWT_SECRET_PASSWORD);
+
     next();
   } catch (error) {
     res.status(401).json({

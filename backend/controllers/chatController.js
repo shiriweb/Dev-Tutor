@@ -1,9 +1,13 @@
 const { Chat } = require("../models/Chat.js");
 const { GoogleGenAI } = require("@google/genai");
-const config = require("../config.js");
+const config = require("../config/config.js");
 
 // Initialize Google Gemini AI client with API key
 const ai = new GoogleGenAI({ apiKey: config.GEMINI_API_KEY });
+
+const getChatHistory = (chat) => {
+  return chat.messages.map((msg) => `${msg.sender}: ${msg.content}`).join("\n");
+};
 
 // Create a new chat session
 const createChat = async (req, res) => {
@@ -21,15 +25,19 @@ const createChat = async (req, res) => {
     const newChat = new Chat({
       userId,
       topic,
+      title: content.slice(0, 30),
       messages: [{ sender: "user", content }],
     });
 
     await newChat.save();
 
+    const chatHistory = getChatHistory(newChat);
+    console.log("Chat history:", chatHistory);
+
     // Sending the user's message to the AI model and getting a response
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: content,
+      contents: chatHistory,
     });
 
     console.log("AI response:", response);
@@ -52,6 +60,8 @@ const createChat = async (req, res) => {
     return res.status(200).json({ chat: newChat });
   } catch (error) {
     console.error("Error creating chat:", error);
+    console.log("ERror");
+
     return res.status(500).json({ error: "Error while creating chat" });
   }
 };
@@ -88,10 +98,12 @@ const addMessageToChat = async (req, res) => {
     chat.messages.push({ sender: "user", content });
     await chat.save();
 
+    const chatHistory = getChatHistory(chat);
+
     // AI response
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: content,
+      contents: chatHistory,
     });
 
     const aiContent =

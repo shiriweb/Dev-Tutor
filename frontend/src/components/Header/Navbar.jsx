@@ -12,22 +12,22 @@ const Navbar = () => {
         <div className="flex items-center space-x-2">
           <span className="ml-4 text-2xl font-bold">
             <span className="text-white">Dev</span>
-            <span className="text-[#C68642]">Tutor</span>
+            <span className="text-red-500">Tutor</span>
           </span>
         </div>
 
         {/* Nav Links (desktop) */}
         <div className="hidden lg:flex ml-48 space-x-8 text-white font-medium">
-          <Link to="/" className="hover:text-[#C68642]">
+          <Link to="/" className="hover:text-red-500">
             Home
           </Link>
-          <Link to="/features" className="hover:text-[#C68642]">
+          <Link to="/features" className="hover:text-red-500">
             Features
           </Link>
-          <Link to="/about" className="hover:text-[#C68642]">
+          <Link to="/about" className="hover:text-red-500">
             About
           </Link>
-          <Link to="/dashboard" className="hover:text-[#C68642]">
+          <Link to="/dashboard" className="hover:text-red-500">
             Dashboard
           </Link>
         </div>
@@ -36,7 +36,7 @@ const Navbar = () => {
           <button className="text-white hover:bg-white hover:text-teal-700">
             Log In
           </button>
-          <button className="bg-[#C68642] border border-black px-3 py-1 rounded-full hover:text-[#D2A679] hover:bg-white">
+          <button className="bg-red-500 text-white border border-black px-3 py-1 rounded-full hover:text-[#D2A679] hover:bg-white">
             Sign Up
           </button>
         </div>

@@ -10,6 +10,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Dashboard from "./pages/Dashboard";
 import HomePage from "./pages/HomePage";
+import LeftPanel from "./components/Chat/LeftPanel";
 
 export const backendUrl = "http://localhost:3000";
 
@@ -26,7 +27,7 @@ const App = () => {
       <Routes>
         <Route
           path="/"
-          element={token ? <HomePage /> : <Navigate to="/login" replace />}
+          element={token ? <Dashboard /> : <Navigate to="/login" replace />}
         />
         <Route
           path="/login"

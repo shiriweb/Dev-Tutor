@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import LeftPanel from "../components/Chat/LeftPanel";
 import ChatInterface from "../components/Chat/ChatInterface";
+import RightPanel from "../components/Chat/RightPanel";
 
 const Dashboard = () => {
   const [topics] = useState(["JavaScript", "React", "Python", "HTML/CSS"]);
   const [selectedTopic, setSelectedTopic] = useState(topics[0]);
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [currentChatId, setCurrentChatId] = useState(null);
-
+  const [chatHistory, setChatHistory] = useState([]);
   // useEffect(() => {}, [selectedTopic]);
 
   return (
@@ -23,6 +24,14 @@ const Dashboard = () => {
         currentChatId={currentChatId}
         setCurrentChatId={setCurrentChatId}
         selectedTopic={selectedTopic}
+      />
+
+      <RightPanel
+        token={token}
+        chatHistory={chatHistory}
+        setChatHistory={setChatHistory}
+        currentChatId={currentChatId}
+        setCurrentChatId={setCurrentChatId}
       />
     </div>
   );

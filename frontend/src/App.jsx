@@ -34,6 +34,7 @@ const App = () => {
           element={<LoginRegisterForm setToken={handleSetToken} />}
         />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/home" element={<HomePage />} />
       </Routes>
 
       <ToastContainer />

@@ -87,6 +87,8 @@ const ChatInterface = ({
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        console.log(res);
+        const data = res.data;
         setCurrentChatId(data._id);
         aiResponse = res.data.chatMessage;
         setIsTyping(false);
@@ -113,7 +115,7 @@ const ChatInterface = ({
             }`}
           >
             <div
-              className={`p-2 rounded-xl max-w-xs ${
+              className={`p-2 rounded-xl max-w-xs mb-2 ${
                 msg.sender === "user"
                   ? "bg-teal-300 text-teal-900"
                   : "bg-gray-200 text-gray-900"

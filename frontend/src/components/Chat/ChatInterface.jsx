@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { FaPaperPlane } from "react-icons/fa";
 import axios from "axios";
-import ReactMarkdown from "react-markdown";
 const ChatInterface = ({
   token,
   selectedTopic,
@@ -13,14 +12,14 @@ const ChatInterface = ({
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // Fetch messages for the current chat
+  // Fetching messages for the current chat
   useEffect(() => {
-    const fetchMessages = async () => {
+    const fetchMessage = async () => {
       if (!currentChatId) {
         setMessages([
           {
             sender: "assistant",
-            content: "Hello, I am Dev-Tutor. How can I help you?",
+            content: "Hello, I am Dev-Tutor. How can I help you",
           },
         ]);
         return;
@@ -28,103 +27,101 @@ const ChatInterface = ({
 
       try {
         const res = await axios.get(`/api/chats/${currentChatId}`, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
-
-        const chat = res.data.chat;
-        if (!chat || !chat.messages || chat.messages.length === 0) {
+        const data = res.data;
+        if (!data.messages || data.messages.length === 0) {
           setMessages([
             {
               sender: "assistant",
-              content: "Hello, I am Dev-Tutor. How can I help you?",
+              content: "Hello, I am Dev-Tutor. How can I help you ",
             },
           ]);
         } else {
-          setMessages(chat.messages);
+          setMessages(data.messages);
         }
       } catch (error) {
-        console.log("Error fetching messages:", error);
+        console.log("Error fetching messages", error);
       }
     };
-
-    fetchMessages();
+    fetchMessage();
   }, [currentChatId, token]);
 
-  // Scroll chat to bottom when messages update
+  // Scroll the chat to the bottom when the messages updates
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
   }, [messages]);
 
-  // Send new message
+  // Sending new message
   const handleSendMessage = async () => {
-    if (!newMessage.trim()) return;
-
+    if (!newMessage.trim()) {
+      return;
+    }
     const messageToSend = { sender: "user", content: newMessage };
     setMessages([...messages, messageToSend]);
-    setNewMessage("");
-    setIsTyping(true);
+    setNewMessage(" ");
 
     try {
-      let res;
-
+      let aiResponse = null;
       if (currentChatId) {
-        // Existing chat
-        res = await axios.post(
+        setIsTyping(true);
+        const res = await axios.post(
           `/api/chats/${currentChatId}/messages`,
-          { content: messageToSend.content },
+          { content: newMessage },
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        aiResponse = res.data.chatMessage;
+        setIsTyping(false);
       } else {
-        // New chat
-        res = await axios.post(
+        setIsTyping(true);
+
+        const res = await axios.post(
           `/api/chats`,
-          { topic: selectedTopic, content: messageToSend.content },
+          {
+            topic: selectedTopic,
+            content: newMessage,
+          },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        // Update current chat ID so future messages go to the same chat
-        setCurrentChatId(res.data.chat._id);
+        console.log(res);
+        const data = res.data;
+        setCurrentChatId(data._id);
+        aiResponse = res.data.chatMessage;
+        setIsTyping(false);
       }
-
-      // Get AI response from backend
-      const aiResponse = res.data.chatMessage || "AI did not respond";
-      setMessages((prev) => [
-        ...prev,
-        { sender: "assistant", content: aiResponse },
-      ]);
+      if (aiResponse) {
+        setMessages((prev) => [
+          ...prev,
+          { sender: "assistant", content: aiResponse },
+        ]);
+      }
     } catch (error) {
-      console.log("Error sending message:", error);
-      setMessages((prev) => [
-        ...prev,
-        { sender: "assistant", content: "Error: Could not get AI response." },
-      ]);
-    } finally {
-      setIsTyping(false);
+      console.log("Error sending Messages", error);
     }
   };
 
   return (
     <div className="flex-1 flex flex-col p-2 w-full bg-gradient-to-b from-teal-800 via-teal-700 to-teal-900 rounded-2xl shadow-lg ml-2">
-      {/* Messages */}
-      <div className="flex-1 overflow-auto mb-2 text-sm">
+      <div className="flex-1 overflow-auto  text-sm ">
         {messages.map((msg, index) => (
           <div
             key={index}
             className={`flex ${
-              msg.sender === "user" ? "justify-end" : "justify-start"
-            }`}
+              msg.sender === "user" ? "justify-end" : "justify:start"
+            } mb-4`}
           >
             <div
-              className={`p-2 rounded-xl max-w-xs ${
+              className={`p-2 rounded-xl max-w-xs mb-2 ${
                 msg.sender === "user"
                   ? "bg-teal-300 text-teal-900"
                   : "bg-gray-200 text-gray-900"
               }`}
             >
-              {msg.sender === "assistant" ? (
-                <ReactMarkdown>{msg.content}</ReactMarkdown>
-              ) : (
-                msg.content
-              )}
+              {msg.content}
             </div>
           </div>
         ))}
@@ -139,8 +136,6 @@ const ChatInterface = ({
 
         <div ref={messagesEndRef} />
       </div>
-
-      {/* Input */}
       <div className="flex space-x-2">
         <input
           className="flex-1 p-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
@@ -148,7 +143,6 @@ const ChatInterface = ({
           placeholder="Ask Anything"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
         />
         <button
           className="bg-teal-400 p-2 rounded-lg hover:bg-[#f5f5f5]"

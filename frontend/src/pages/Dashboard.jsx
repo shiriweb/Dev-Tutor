@@ -9,17 +9,20 @@ const Dashboard = () => {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [currentChatId, setCurrentChatId] = useState(null);
 
-  // useEffect(() => {}, [selectedTopic]);
-
   return (
-    <div className="flex min-h-screen p-1 bg-[#f5f5f5]">
+    <div className="flex min-h-screen p-1 bg-[#f5f5f5] top-0">
       <LeftPanel
+        className="h-full sticky top-0"
         topics={topics}
         selectedTopic={selectedTopic}
-        setSelectedTopic={setSelectedTopic}
+        setSelectedTopic={(topic) => {
+          setSelectedTopic(topic);
+          setCurrentChatId(null);
+        }}
       />
 
       <ChatInterface
+        className="h-full"
         token={token}
         currentChatId={currentChatId}
         setCurrentChatId={setCurrentChatId}
@@ -27,6 +30,7 @@ const Dashboard = () => {
       />
 
       <RightPanel
+        className="h-full sticky top-0"
         token={token}
         currentChatId={currentChatId}
         setCurrentChatId={setCurrentChatId}
@@ -36,3 +40,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

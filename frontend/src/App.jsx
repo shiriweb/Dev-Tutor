@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+
 import LoginRegisterForm from "./components/Auth/LoginRegisterForm";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Dashboard from "./pages/Dashboard";
-import HomePage from "./pages/HomePage";
 
-// export const backendUrl = "http://localhost:3000";
+import Dashboard from "./pages/Dashboard";
+
+export const backendUrl = "http://localhost:3000";
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
@@ -19,22 +20,25 @@ const App = () => {
   return (
     <>
       <Routes>
+        {/* Home */}
         <Route
           path="/"
           element={token ? <Dashboard /> : <Navigate to="/login" replace />}
         />
 
+        {/* Login */}
         <Route
           path="/login"
-          element={<LoginRegisterForm setToken={handleSetToken} />}
+          element={
+            <LoginRegisterForm setToken={handleSetToken} token={token} />
+          }
         />
 
+        {/* Dashboard */}
         <Route
           path="/dashboard"
           element={token ? <Dashboard /> : <Navigate to="/login" replace />}
         />
-
-        <Route path="/home" element={<HomePage />} />
       </Routes>
 
       <ToastContainer />

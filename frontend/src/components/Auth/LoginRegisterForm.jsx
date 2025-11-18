@@ -26,7 +26,7 @@ const LoginRegisterForm = ({ setToken, token }) => {
 
   useEffect(() => {
     if (token) {
-      navigate("/");
+      navigate("/dashboard");
     }
   }, [token, navigate]);
 

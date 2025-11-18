@@ -6,7 +6,17 @@ const config = require("../config/config.js");
 const ai = new GoogleGenAI({ apiKey: config.GEMINI_API_KEY });
 
 const getChatHistory = (chat) => {
-  return chat.messages.map((msg) => `${msg.sender}: ${msg.content}`).join("\n");
+  const topicInstruction = `
+You are an AI tutor. Only answer questions about the topic: ${chat.topic}.
+If the user asks something outside this topic, politely reply:
+"I'm sorry, I can only answer questions about ${chat.topic}."
+`;
+
+  const messagesText = chat.messages
+    .map((msg) => `${msg.sender}: ${msg.content}`)
+    .join("\n");
+
+  return topicInstruction + "\n\n" + messagesText;
 };
 
 // Create a new chat session
@@ -36,7 +46,7 @@ const createChat = async (req, res) => {
 
     // Sending the user's message to the AI model and getting a response
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash-lite",
+      model: "gemini-2.5-flash-lite",
       contents: chatHistory,
     });
 
@@ -130,3 +140,5 @@ const addMessageToChat = async (req, res) => {
   }
 };
 module.exports = { createChat, getChats, addMessageToChat };
+
+

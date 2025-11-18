@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import LeftPanel from "../components/Chat/LeftPanel";
 import ChatInterface from "../components/Chat/ChatInterface";
+import RightPanel from "../components/Chat/RightPanel";
 
 const Dashboard = () => {
   const [topics] = useState(["JavaScript", "React", "Python", "HTML/CSS"]);
@@ -23,6 +24,12 @@ const Dashboard = () => {
         currentChatId={currentChatId}
         setCurrentChatId={setCurrentChatId}
         selectedTopic={selectedTopic}
+      />
+
+      <RightPanel
+        token={token}
+        currentChatId={currentChatId}
+        setCurrentChatId={setCurrentChatId}
       />
     </div>
   );

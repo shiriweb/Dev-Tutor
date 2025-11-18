@@ -63,7 +63,7 @@ const ChatInterface = ({
     }
     const messageToSend = { sender: "user", content: newMessage };
     setMessages([...messages, messageToSend]);
-    setNewMessage(" ");
+    setNewMessage("");
 
     try {
       let aiResponse = null;
@@ -87,7 +87,7 @@ const ChatInterface = ({
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        setCurrentChatId(data._id);
+        setCurrentChatId(res.data._id);
         aiResponse = res.data.chatMessage;
         setIsTyping(false);
       }
@@ -99,6 +99,7 @@ const ChatInterface = ({
       }
     } catch (error) {
       console.log("Error sending Messages", error);
+      setIsTyping(false);
     }
   };
 

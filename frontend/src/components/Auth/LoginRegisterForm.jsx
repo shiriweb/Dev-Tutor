@@ -30,7 +30,7 @@ const LoginRegisterForm = ({ setToken }) => {
           return;
         }
 
-        const response = await axios.post(`${backendUrl}/api/auth/register`, {
+        const response = await axios.post("/api/auth/register", {
           username,
           email,
           password,
@@ -40,7 +40,7 @@ const LoginRegisterForm = ({ setToken }) => {
         setCurrentState("Sign In");
         resetForm();
       } else {
-        const response = await axios.post(`${backendUrl}/api/auth/login`, {
+        const response = await axios.post("/api/auth/login", {
           email,
           password,
         });

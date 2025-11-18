@@ -1,11 +1,11 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
 import { backendUrl } from "../../App";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-const LoginRegisterForm = ({ setToken }) => {
+const LoginRegisterForm = ({ setToken, token }) => {
   const [currentState, setCurrentState] = useState("Sign In");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -19,6 +19,16 @@ const LoginRegisterForm = ({ setToken }) => {
     setPassword("");
     setConfirmPassword("");
   };
+
+  useEffect(() => {
+    resetForm();
+  }, [currentState]);
+
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+  }, [token, navigate]);
 
   const formSubmission = async (e) => {
     e.preventDefault();
@@ -37,21 +47,17 @@ const LoginRegisterForm = ({ setToken }) => {
         });
 
         toast.success(response.data.message);
-        setCurrentState("Sign In");
-        resetForm();
+        setCurrentState("Sign In"); 
       } else {
         const response = await axios.post("/api/auth/login", {
           email,
           password,
         });
 
-        setToken(response.data.token);
         toast.success(response.data.message);
-        resetForm();
-        navigate("/");
+        setToken(response.data.token); // navigation happens in useEffect
       }
     } catch (error) {
-      console.log(error);
       if (error.response?.data?.error) {
         toast.error(error.response.data.error);
       } else {

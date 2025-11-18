@@ -36,7 +36,7 @@ const createChat = async (req, res) => {
 
     // Sending the user's message to the AI model and getting a response
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.0-flash-lite",
       contents: chatHistory,
     });
 
@@ -57,10 +57,13 @@ const createChat = async (req, res) => {
     newChat.messages.push({ sender: "assistant", content: cleanedResponse });
     await newChat.save();
 
-    return res.status(200).json({ chat: newChat });
+    return res
+      .status(200)
+      .json({ chat: newChat, chatMessage: cleanedResponse });
+    F;
   } catch (error) {
     console.error("Error creating chat:", error);
-    console.log("ERror");
+    console.log("Error");
 
     return res.status(500).json({ error: "Error while creating chat" });
   }
@@ -102,7 +105,7 @@ const addMessageToChat = async (req, res) => {
 
     // AI response
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash-lite",
       contents: chatHistory,
     });
 
@@ -119,7 +122,7 @@ const addMessageToChat = async (req, res) => {
     chat.messages.push({ sender: "assistant", content: cleanedResponse });
     await chat.save();
 
-    return res.status(200).json({ chat });
+    return res.status(200).json({ chat, chatMessage: cleanedResponse });
   } catch (error) {
     return res
       .status(500)

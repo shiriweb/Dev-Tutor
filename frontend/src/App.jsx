@@ -6,8 +6,9 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import Dashboard from "./pages/Dashboard";
+import HomePage from "./pages/HomePage";
 
-export const backendUrl = "http://localhost:3000";
+// export const backendUrl = "http://localhost:3000";
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
@@ -21,10 +22,7 @@ const App = () => {
     <>
       <Routes>
         {/* Home */}
-        <Route
-          path="/"
-          element={token ? <Dashboard /> : <Navigate to="/login" replace />}
-        />
+        <Route path="/" element={<HomePage />} />
 
         {/* Login */}
         <Route

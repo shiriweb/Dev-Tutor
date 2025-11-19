@@ -1,26 +1,109 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaHistory, FaPlus, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const RightPanel = ({
   token,
   currentChatId,
   setCurrentChatId,
-  chatHistory = [],
+  chatHistory,
   setChatHistory,
+  currentUser,
+  setCurrentUser,
+  selectedTopic,
+  setSelectedTopic,
 }) => {
-  const currentUser = "Shirisha";
+  const navigate = useNavigate();
+
+  const fetchUser = async () => {
+    if (!token) return;
+    try {
+      const res = await axios.get("/api/auth/currentUser", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCurrentUser(res.data.username);
+    } catch (error) {
+      console.log("Error fetching the user: ", error);
+    }
+  };
+
+  const fetchChats = async () => {
+    if (!token) return;
+    try {
+      const res = await axios.get("/api/chats", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Only keep chats for selected topic
+      const filteredChat = res.data.chats.filter(
+        (chat) => chat.topic === selectedTopic
+      );
+
+      // Replace chatHistory ONLY if it’s a different list
+      setChatHistory(filteredChat);
+    } catch (error) {
+      console.log("Error fetching chats: ", error);
+    }
+  };
+
+  const handleNewChat = async () => {
+    if (!token) return;
+    const topic = selectedTopic;
+    const content = "";
+
+    try {
+      const res = await axios.post(
+        "/api/chats",
+        { topic, content },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const newChat = res.data.chat;
+
+      // Update chat history locally
+      setChatHistory((prev) => [...prev, newChat]);
+      setCurrentChatId(newChat._id);
+
+      // Refetch chats to sync fully with server
+      await fetchChats();
+    } catch (error) {
+      console.log("Error creating new Chat: ", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+    fetchChats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
+
+  // Only fetch chats when the topic changes, but do NOT overwrite new chats
+  useEffect(() => {
+    fetchChats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTopic]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
+
   return (
     <div className="hidden w-full lg:block md:w-60 lg:w-60 bg-gradient-to-b from-teal-800 via-teal-700 to-teal-900 rounded-2xl shadow-lg p-2 text-white ml-2 ">
       <div className="flex items-center justify-between mb-2 p-2">
         <div className="flex items-center gap-2 font-semibold text-sm">
-          <FaUserCircle size={20} />
+          <FaUserCircle size={20} /> {currentUser}
         </div>
-        <button>
+        <button onClick={handleLogout}>
           <FaSignOutAlt />
         </button>
       </div>
 
-      <button className="w-full flex items-center justify-center gap-2 p-2 bg-teal-900 rounded-2xl font-semibold focus:bg-teal-950 shadow-md">
+      <button
+        onClick={handleNewChat}
+        className="w-full flex items-center justify-center gap-2 p-2 bg-teal-900 rounded-2xl font-semibold focus:bg-teal-950 shadow-md"
+      >
         <FaPlus />
         New Chat
       </button>
@@ -29,12 +112,13 @@ const RightPanel = ({
         <FaHistory /> Chat History
       </h2>
 
-      <div className="flex flex-col gap-1 autoflow-y-auto max-h-40 md:max-h-80">
+      <div className="flex flex-col gap-2 overflow-y-scroll text-sm scrollbar-thin ">
         {chatHistory.map((chat) => (
           <div
+            onClick={() => setCurrentChatId(chat._id)}
             key={chat._id}
-            className={`p-2 rounded-2xl cursor-pointer shadow-md ${
-              chat._id === currentChatId ? "bg-teal-900 " : "bg-teal-800"
+            className={`p-2 rounded-3xl cursor-pointer ${
+              chat._id === currentChatId ? "bg-teal-900 " : "hover:bg-teal-800"
             }`}
           >
             <p>{chat.title}</p>

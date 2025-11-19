@@ -2,12 +2,19 @@ import React, { useState } from "react";
 import LeftPanel from "../components/Chat/LeftPanel";
 import ChatInterface from "../components/Chat/ChatInterface";
 import RightPanel from "../components/Chat/RightPanel";
+import LoginRegisterForm from "../components/Auth/LoginRegisterForm";
 
 const Dashboard = () => {
   const [topics] = useState(["JavaScript", "React", "Python", "HTML/CSS"]);
   const [selectedTopic, setSelectedTopic] = useState(topics[0]);
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [currentChatId, setCurrentChatId] = useState(null);
+  const [chatHistory, setChatHistory] = useState([]);
+  const [currentUser, setCurrentUser] = useState("");
+
+  if (!token) {
+    return <LoginRegisterForm token={token} setToken={setToken} />;
+  }
 
   return (
     <div className="flex min-h-screen p-1 bg-[#f5f5f5] top-0">
@@ -34,6 +41,12 @@ const Dashboard = () => {
         token={token}
         currentChatId={currentChatId}
         setCurrentChatId={setCurrentChatId}
+        chatHistory={chatHistory}
+        setChatHistory={setChatHistory}
+        currentUser={currentUser}
+        setCurrentUser={setCurrentUser}
+        selectedTopic={selectedTopic}
+        setSelectedTopic={setSelectedTopic}
       />
     </div>
   );

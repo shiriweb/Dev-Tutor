@@ -63,7 +63,7 @@ const ChatInterface = ({
     console.log(selectedTopic);
 
     const messageToSend = { sender: "user", content: newMessage };
-    setMessages([...messages, messageToSend]);
+    setMessages((prev) => [...prev, messageToSend]);
     setNewMessage("");
 
     try {
@@ -109,7 +109,7 @@ const ChatInterface = ({
           <div
             key={index}
             className={`flex ${
-              msg.sender === "user" ? "justify-end" : "justify-start"
+              msg.sender === "user" ? "justify-end " : "justify-start"
             } mb-3 w-full`}
           >
             <div
@@ -120,26 +120,7 @@ const ChatInterface = ({
               }`}
             >
               {msg.sender === "assistant" ? (
-                <ReactMarkdown
-                  components={{
-                    code({ node, inline, className, children, ...props }) {
-                      return !inline ? (
-                        <pre className="bg-gray-900 text-green-300 p-3 rounded-lg overflow-x-auto text-xs">
-                          <code {...props}>{children}</code>
-                        </pre>
-                      ) : (
-                        <code className="bg-gray-300 px-1 py-0.5 rounded text-xs">
-                          {children}
-                        </code>
-                      );
-                    },
-                    p({ children }) {
-                      return <p className="mb-2 leading-relaxed">{children}</p>;
-                    },
-                  }}
-                >
-                  {msg.content}
-                </ReactMarkdown>
+                <ReactMarkdown>{msg.content}</ReactMarkdown>
               ) : (
                 msg.content
               )}

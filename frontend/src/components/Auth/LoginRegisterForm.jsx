@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
-import { backendUrl } from "../../App";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -47,7 +46,7 @@ const LoginRegisterForm = ({ setToken, token }) => {
         });
 
         toast.success(response.data.message);
-        setCurrentState("Sign In"); 
+        setCurrentState("Sign In");
       } else {
         const response = await axios.post("/api/auth/login", {
           email,
@@ -67,13 +66,13 @@ const LoginRegisterForm = ({ setToken, token }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-teal-50 p-2 sm:p-4">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-teal-800 via-teal-700 to-teal-900  p-2 sm:p-4">
       <form
         onSubmit={formSubmission}
         className="w-full sm:max-w-xs md:max-w-sm lg:max-w-xs lg:py-7 bg-white p-6 rounded-none sm:rounded-2xl shadow-none sm:shadow-xl space-y-3"
       >
         <div className="text-center mb-3">
-          <p className="text-2xl font-bold text-teal-700 tracking-wide">
+          <p className="text-2xl font-bold text-teal-700 ">
             {currentState}
           </p>
         </div>

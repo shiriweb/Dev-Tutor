@@ -24,57 +24,60 @@ const createChat = async (req, res) => {
   const { topic, content } = req.body;
   const userId = req.userId;
 
-  if (!userId || !topic || !content || content.trim() === "") {
-    return res
-      .status(400)
-      .json({ error: "userId, topic, and content are required" });
+  if (!userId || !topic) {
+    return res.status(400).json({ error: "userId and topic are required" });
   }
 
   try {
-    // Creating a new chat document with the user's message
+    let initialMessages = [];
+    let title = "New Chat";
+
+    if (content && content.trim() !== "") {
+      // User typed something
+      initialMessages = [{ sender: "user", content }];
+      title = content.slice(0, 30);
+    } else {
+      // New chat without user input
+      initialMessages = [
+        { sender: "assistant", content: "Hello! I am Dev-Tutor. How can I help you?" },
+      ];
+    }
+
     const newChat = new Chat({
       userId,
       topic,
-      title: content.slice(0, 30),
-      messages: [{ sender: "user", content }],
+      title,
+      messages: initialMessages,
     });
 
     await newChat.save();
 
-    const chatHistory = getChatHistory(newChat);
-    console.log("Chat history:", chatHistory);
+    // If the first message is from user, generate AI response
+    if (content && content.trim() !== "") {
+      const chatHistory = getChatHistory(newChat);
 
-    // Sending the user's message to the AI model and getting a response
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-lite",
-      contents: chatHistory,
-    });
+      const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash-lite",
+        contents: chatHistory,
+      });
 
-    console.log("AI response:", response);
+      const aiContent =
+        response.text ||
+        response.candidates?.[0]?.content ||
+        "AI did not return a response";
 
-    // Extracting and cleaning the AI's response
-    const aiContent =
-      response.text ||
-      response.candidates?.[0]?.content ||
-      "AI did not return a response";
+      const cleanedResponse = aiContent.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
 
-    const cleanedResponse = aiContent
-      .replace(/```json\n?/g, "")
-      .replace(/```\n?/g, "")
-      .trim();
+      newChat.messages.push({ sender: "assistant", content: cleanedResponse });
+      await newChat.save();
 
-    // Adding the AI's response to the chat messages
-    newChat.messages.push({ sender: "assistant", content: cleanedResponse });
-    await newChat.save();
+      return res.status(200).json({ chat: newChat, chatMessage: cleanedResponse });
+    }
 
-    return res
-      .status(200)
-      .json({ chat: newChat, chatMessage: cleanedResponse });
-    F;
+    // If no user input, just return the AI greeting
+    return res.status(200).json({ chat: newChat, chatMessage: initialMessages[0].content });
   } catch (error) {
     console.error("Error creating chat:", error);
-    console.log("Error");
-
     return res.status(500).json({ error: "Error while creating chat" });
   }
 };
@@ -82,19 +85,15 @@ const createChat = async (req, res) => {
 // Retrieve all chats for a user
 const getChats = async (req, res) => {
   try {
-    // Fetching all chat documents for the user
     const chats = await Chat.find({ userId: req.userId });
     return res.status(200).json({ chats });
   } catch (error) {
-    return res.status(500).json({
-      error: "Error while fetching chats",
-    });
+    return res.status(500).json({ error: "Error while fetching chats" });
   }
 };
 
-// Adding the new message to an existing chat
+// Add a new message to an existing chat
 const addMessageToChat = async (req, res) => {
-  //   const chatId = req.params.id;
   const chatId = req.params.id;
   const { content } = req.body;
 
@@ -107,13 +106,11 @@ const addMessageToChat = async (req, res) => {
       return res.status(404).json({ error: "Chat not found" });
     }
 
-    // Adding User message
     chat.messages.push({ sender: "user", content });
     await chat.save();
 
     const chatHistory = getChatHistory(chat);
 
-    // AI response
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash-lite",
       contents: chatHistory,
@@ -124,21 +121,28 @@ const addMessageToChat = async (req, res) => {
       response.candidates?.[0]?.content ||
       "AI did not return a response";
 
-    const cleanedResponse = aiContent
-      .replace(/```json\n?/g, "")
-      .replace(/```\n?/g, "")
-      .trim();
+    const cleanedResponse = aiContent.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
 
     chat.messages.push({ sender: "assistant", content: cleanedResponse });
     await chat.save();
 
     return res.status(200).json({ chat, chatMessage: cleanedResponse });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ error: "Error while adding message to chat" });
+    return res.status(500).json({ error: "Error while adding message to chat" });
   }
 };
-module.exports = { createChat, getChats, addMessageToChat };
 
+const getSingleChat = async (req, res) => {
+  try {
+    const chat = await Chat.findById(req.params.id);
+    if (!chat) {
+      return res.status(400).json({ error: "Chats not found" });
+    }
+    return res.status(200).json(chat);
+  } catch (error) {
+    return res.status(500).json({ error: "Error fetching chats" });
+  }
+};
+
+module.exports = { createChat, getChats, addMessageToChat, getSingleChat };
 

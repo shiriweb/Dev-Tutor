@@ -54,7 +54,7 @@ const LoginRegisterForm = ({ setToken, token }) => {
         });
 
         toast.success(response.data.message);
-        setToken(response.data.token); // navigation happens in useEffect
+        setToken(response.data.token); 
       }
     } catch (error) {
       if (error.response?.data?.error) {

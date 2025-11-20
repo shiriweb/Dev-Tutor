@@ -57,7 +57,7 @@ const ChatInterface = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Send message
+  
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
     console.log(selectedTopic);
@@ -138,7 +138,6 @@ const ChatInterface = ({
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
       <div className="flex space-x-2 mt-2">
         <input
           type="text"

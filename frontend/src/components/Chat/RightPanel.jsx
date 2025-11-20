@@ -13,6 +13,7 @@ const RightPanel = ({
   setCurrentUser,
   selectedTopic,
   setSelectedTopic,
+  fetchChats,
 }) => {
   const navigate = useNavigate();
 
@@ -25,25 +26,6 @@ const RightPanel = ({
       setCurrentUser(res.data.username);
     } catch (error) {
       console.log("Error fetching the user: ", error);
-    }
-  };
-
-  const fetchChats = async () => {
-    if (!token) return;
-    try {
-      const res = await axios.get("/api/chats", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      // Only keep chats for selected topic
-      const filteredChat = res.data.chats.filter(
-        (chat) => chat.topic === selectedTopic
-      );
-
-      // Replace chatHistory ONLY if it’s a different list
-      setChatHistory(filteredChat);
-    } catch (error) {
-      console.log("Error fetching chats: ", error);
     }
   };
 
@@ -60,13 +42,9 @@ const RightPanel = ({
       );
 
       const newChat = res.data.chat;
-
-      // Update chat history locally
       setChatHistory((prev) => [...prev, newChat]);
       setCurrentChatId(newChat._id);
-
-      // Refetch chats to sync fully with server
-      await fetchChats();
+      await fetchChats(selectedTopic);
     } catch (error) {
       console.log("Error creating new Chat: ", error);
     }
@@ -75,13 +53,12 @@ const RightPanel = ({
   useEffect(() => {
     fetchUser();
     fetchChats();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
-  // Only fetch chats when the topic changes, but do NOT overwrite new chats
   useEffect(() => {
-    fetchChats();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (selectedTopic) {
+      fetchChats(selectedTopic);
+    }
   }, [selectedTopic]);
 
   const handleLogout = () => {
@@ -90,40 +67,45 @@ const RightPanel = ({
   };
 
   return (
-    <div className="hidden w-full lg:block md:w-60 lg:w-60 bg-gradient-to-b from-teal-800 via-teal-700 to-teal-900 rounded-2xl shadow-lg p-2 text-white ml-2 ">
-      <div className="flex items-center justify-between mb-2 p-2">
-        <div className="flex items-center gap-2 font-semibold text-sm">
-          <FaUserCircle size={20} /> {currentUser}
-        </div>
-        <button onClick={handleLogout}>
-          <FaSignOutAlt />
-        </button>
-      </div>
-
-      <button
-        onClick={handleNewChat}
-        className="w-full flex items-center justify-center gap-2 p-2 bg-teal-900 rounded-2xl font-semibold focus:bg-teal-950 shadow-md"
-      >
-        <FaPlus />
-        New Chat
-      </button>
-
-      <h2 className=" w-full flex items-center p-2 gap-2">
-        <FaHistory /> Chat History
-      </h2>
-
-      <div className="flex flex-col gap-2 overflow-y-scroll text-sm scrollbar-thin ">
-        {chatHistory.map((chat) => (
-          <div
-            onClick={() => setCurrentChatId(chat._id)}
-            key={chat._id}
-            className={`p-2 rounded-3xl cursor-pointer ${
-              chat._id === currentChatId ? "bg-teal-900 " : "hover:bg-teal-800"
-            }`}
-          >
-            <p>{chat.title}</p>
+    <div className="hidden w-full lg:block md:w-60 lg:w-60 h-screen bg-gradient-to-b from-teal-800 via-teal-700 to-teal-900 rounded-2xl shadow-lg p-2 text-white ml-2">
+      <div className="flex flex-col h-full">
+        <div className="flex items-center justify-between mb-2 p-2">
+          <div className="flex items-center gap-2 font-semibold text-sm">
+            <FaUserCircle size={20} /> {currentUser}
           </div>
-        ))}
+          <button onClick={handleLogout}>
+            <FaSignOutAlt />
+          </button>
+        </div>
+
+        <button
+          onClick={handleNewChat}
+          className="w-full flex items-center justify-center gap-2 p-2 bg-teal-900 rounded-2xl font-semibold focus:bg-teal-950 shadow-md"
+        >
+          <FaPlus />
+          New Chat
+        </button>
+
+        <h2 className="w-full flex items-center p-2 gap-2">
+          <FaHistory /> Chat History
+        </h2>
+
+        {/* Scrollable chat history */}
+        <div className="flex flex-col gap-2 overflow-y-scroll text-sm scrollbar-thin flex-1">
+          {chatHistory.map((chat) => (
+            <div
+              onClick={() => setCurrentChatId(chat._id)}
+              key={chat._id}
+              className={`p-2 rounded-3xl cursor-pointer ${
+                chat._id === currentChatId
+                  ? "bg-teal-900 "
+                  : "hover:bg-teal-800"
+              }`}
+            >
+              <p>{chat.title}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

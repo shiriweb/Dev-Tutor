@@ -8,7 +8,6 @@ import "react-toastify/dist/ReactToastify.css";
 import Dashboard from "./pages/Dashboard";
 import HomePage from "./pages/HomePage";
 
-// export const backendUrl = "http://localhost:3000";
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem("token") || null);

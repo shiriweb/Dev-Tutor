@@ -4,7 +4,6 @@ import ChatInterface from "../components/Chat/ChatInterface";
 import RightPanel from "../components/Chat/RightPanel";
 import LoginRegisterForm from "../components/Auth/LoginRegisterForm";
 import axios from "axios";
-import QuizGenerator from "../components/Quiz/QuizGenerator";
 
 const Dashboard = () => {
   const [topics] = useState(["JavaScript", "React", "Python", "HTML/CSS"]);

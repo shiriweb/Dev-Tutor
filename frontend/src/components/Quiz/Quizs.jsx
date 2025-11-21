@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import { QuizContext } from "../../context/QuizContext";
-import { toast } from "react-toastify";
 
 const QuizDisplay = () => {
   const { quiz } = useContext(QuizContext);
@@ -8,18 +7,17 @@ const QuizDisplay = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
 
-  if (!quiz) {
-    toast.error("Quiz not available");
-    return;
-  }
+  if (!quiz || !quiz.questions || quiz.questions.length === 0)
+    return <p>No quiz available</p>;
 
   const question = quiz.questions[currentQuestionIndex];
 
   const handleOptionClick = (option) => {
-    if (showFeedback) return;
+    if (showFeedback) return; // Prevent multiple clicks
     setSelectedOption(option);
     setShowFeedback(true);
 
+    // Move to next question after 1.5 seconds
     setTimeout(() => {
       setSelectedOption(null);
       setShowFeedback(false);
@@ -27,7 +25,7 @@ const QuizDisplay = () => {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
       } else {
         alert("Quiz completed!");
-        setCurrentQuestionIndex(0);
+        setCurrentQuestionIndex(0); // optional reset
       }
     }, 1500);
   };

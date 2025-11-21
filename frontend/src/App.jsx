@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import Dashboard from "./pages/Dashboard";
 import HomePage from "./pages/HomePage";
-
+import Quizzes from "./pages/Quizzes";
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
@@ -36,6 +36,7 @@ const App = () => {
           path="/dashboard"
           element={token ? <Dashboard /> : <Navigate to="/login" replace />}
         />
+        <Route path="/quiz" element={<Quizzes />} />
       </Routes>
 
       <ToastContainer />

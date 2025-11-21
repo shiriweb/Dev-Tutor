@@ -4,6 +4,7 @@ import ChatInterface from "../components/Chat/ChatInterface";
 import RightPanel from "../components/Chat/RightPanel";
 import LoginRegisterForm from "../components/Auth/LoginRegisterForm";
 import axios from "axios";
+import QuizGenerator from "../components/Quiz/QuizGenerator";
 
 const Dashboard = () => {
   const [topics] = useState(["JavaScript", "React", "Python", "HTML/CSS"]);
@@ -12,6 +13,9 @@ const Dashboard = () => {
   const [currentChatId, setCurrentChatId] = useState(null);
   const [chatHistory, setChatHistory] = useState([]);
   const [currentUser, setCurrentUser] = useState("");
+  const [quiz, setQuiz] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   if (!token) {
     return <LoginRegisterForm token={token} setToken={setToken} />;
@@ -74,6 +78,12 @@ const Dashboard = () => {
         currentChatId={currentChatId}
         setCurrentChatId={setCurrentChatId}
         selectedTopic={selectedTopic}
+        quiz={quiz}
+        setQuiz={setQuiz}
+        loading={loading}
+        setLoading={setLoading}
+        error={error}
+        setError={setError}
       />
 
       <RightPanel

@@ -2,11 +2,14 @@ import React, { useRef, useState, useEffect } from "react";
 import { FaPaperPlane } from "react-icons/fa";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
+import QuizGenerator from "../Quiz/QuizGenerator";
 const ChatInterface = ({
   token,
   selectedTopic,
   setCurrentChatId,
   currentChatId,
+  loading,
+  setLoading,
 }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
@@ -57,7 +60,6 @@ const ChatInterface = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
     console.log(selectedTopic);
@@ -153,6 +155,14 @@ const ChatInterface = ({
         >
           <FaPaperPlane />
         </button>
+
+        <QuizGenerator
+          token={token}
+          loading={loading}
+          setLoading={setLoading}
+          currentChatId={currentChatId}
+          setCurrentChatId={setCurrentChatId}
+        />
       </div>
     </div>
   );

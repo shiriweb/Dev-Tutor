@@ -14,6 +14,8 @@ app.use(cookieParser());
 app.use(cors());
 connectDB();
 
+// Use Google DNS
+
 // MONGODB CONNECTION
 
 // Routes

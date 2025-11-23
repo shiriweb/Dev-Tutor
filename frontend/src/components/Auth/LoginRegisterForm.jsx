@@ -54,7 +54,7 @@ const LoginRegisterForm = ({ setToken, token }) => {
         });
 
         toast.success(response.data.message);
-        setToken(response.data.token); 
+        setToken(response.data.token);
       }
     } catch (error) {
       if (error.response?.data?.error) {
@@ -72,9 +72,7 @@ const LoginRegisterForm = ({ setToken, token }) => {
         className="w-full sm:max-w-xs md:max-w-sm lg:max-w-xs lg:py-7 bg-white p-6 rounded-none sm:rounded-2xl shadow-none sm:shadow-xl space-y-3"
       >
         <div className="text-center mb-3">
-          <p className="text-2xl font-bold text-teal-700 ">
-            {currentState}
-          </p>
+          <p className="text-2xl font-bold text-teal-700 ">{currentState}</p>
         </div>
 
         {currentState === "Sign Up" && (

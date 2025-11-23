@@ -63,6 +63,9 @@ const RightPanel = ({
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    setCurrentUser(null);
+    setChatHistory([]);
+    setCurrentChatId(null);
     navigate("/");
   };
 

@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const config = require("../config/config");
 
+// Register new user
 const register = async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -22,7 +23,7 @@ const register = async (req, res) => {
     const newUser = new User({ username, email, password: passwordHash });
     await newUser.save();
 
-    return res.status(201).json({ message: "Welcome Back" });
+    return res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
     return res
       .status(500)
@@ -30,6 +31,7 @@ const register = async (req, res) => {
   }
 };
 
+// Login user and return token
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -44,15 +46,8 @@ const login = async (req, res) => {
     const token = jwt.sign({ id: user.id }, config.JWT_SECRET_PASSWORD, {
       expiresIn: "2d",
     });
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      secure: config.NODE_ENV === "production",
-      sameSite: "Strict",
-    });
 
-    return res
-      .status(200)
-      .json({ message: "User logged in successfully", user, token });
+    return res.status(200).json({ message: "User logged in successfully", token });
   } catch (err) {
     return res
       .status(500)
@@ -61,14 +56,7 @@ const login = async (req, res) => {
 };
 
 const logout = (_, res) => {
-  try {
-    res.clearCookie("jwt");
-    return res.status(200).json({ message: "User logged out successfully" });
-  } catch (err) {
-    return res
-      .status(500)
-      .json({ error: "Server error, please try again later" });
-  }
+  return res.status(200).json({ message: "Logout handled on frontend" });
 };
 
 module.exports = { register, login, logout };

@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 
 function userMiddleware(req, res, next) {
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer")) {
+  if (!authHeader || !authHeader.toLowerCase().startsWith("bearer")) {
     return res.status(401).json({
       errors: "No token provided",
     });

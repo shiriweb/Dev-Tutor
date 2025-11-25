@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import hero from "../../assets/hero.png";
+import { Link } from "react-router-dom";
 const Hero = () => {
   const greetingText = "Hello! I am Dev-Tutor. How can I help you?";
   const [text, setText] = useState("");
@@ -14,7 +15,7 @@ const Hero = () => {
         setText("");
       }
     }, 120);
-    return (()=>clearInterval(interval))
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -32,9 +33,11 @@ const Hero = () => {
           designed to make learning efficient and meaningful.
         </p>
 
-        <button className="bg-red-500  lg:ml-14 md:ml-14 sm:mx-auto mt-4 p-2 w-32 rounded-xl text-white font-bold hover:bg-red-600 sm:block ">
-          Get Started
-        </button>
+        <Link to="/dashboard">
+          <button className="bg-red-500  lg:ml-14 md:ml-14 sm:mx-auto mt-4 p-2 w-32 rounded-xl text-white font-bold hover:bg-red-600 sm:block ">
+            Get Started
+          </button>
+        </Link>
       </div>
 
       <div className=" relative flex justify-center mr-8 ">

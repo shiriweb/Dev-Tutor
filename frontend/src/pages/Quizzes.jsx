@@ -1,5 +1,6 @@
 import React from "react";
 import QuizDisplay from "../components/Quiz/QuizDisplay";
+import ScoreBoard from "../components/Quiz/ScoreBoard";
 
 const Quizzes = () => {
   return (

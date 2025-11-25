@@ -70,7 +70,7 @@ const RightPanel = ({
   };
 
   return (
-    <div className="hidden w-full lg:block md:w-60 lg:w-60 h-screen bg-gradient-to-b from-teal-800 via-teal-700 to-teal-900 rounded-2xl shadow-lg p-2 text-white ml-2">
+    <div className="w-32 lg:block md:w-60 lg:w-60 h-screen bg-gradient-to-b from-teal-800 via-teal-700 to-teal-900 rounded-2xl shadow-lg p-2 text-white ml-2">
       <div className="flex flex-col h-full">
         <div className="flex items-center justify-between mb-2 p-2">
           <div className="flex items-center gap-2 font-semibold text-sm">
@@ -113,5 +113,4 @@ const RightPanel = ({
     </div>
   );
 };
-
 export default RightPanel;

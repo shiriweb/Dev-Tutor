@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Dashboard from "./pages/Dashboard";
 import HomePage from "./pages/HomePage";
 import Quizzes from "./pages/Quizzes";
+import ScoreBoard from "./components/Quiz/ScoreBoard";
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
@@ -20,23 +21,25 @@ const App = () => {
   return (
     <>
       <Routes>
-        {/* Home */}
         <Route path="/" element={<HomePage />} />
-
-        {/* Login */}
         <Route
-          path="/login"
+          path="/signin"
           element={
             <LoginRegisterForm setToken={handleSetToken} token={token} />
           }
         />
-
-        {/* Dashboard */}
         <Route
           path="/dashboard"
-          element={token ? <Dashboard /> : <Navigate to="/login" replace />}
+          element={token ? <Dashboard /> : <Navigate to="/signin" replace />}
+        />{" "}
+        <Route
+          path="/quiz"
+          element={token ? <Quizzes /> : <Navigate to="/signin" replace />}
+        />{" "}
+        <Route
+          path="/score"
+          element={token ? <ScoreBoard /> : <Navigate to="/signin" replace />}
         />
-        <Route path="/quiz" element={<Quizzes />} />
       </Routes>
 
       <ToastContainer />

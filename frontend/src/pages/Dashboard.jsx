@@ -58,7 +58,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex min-h-screen p-1 bg-[#f5f5f5] top-0">
+    <div className="flex min-h-screen p-1 bg-[#f5f5f5] top-0 sticky">
       <LeftPanel
         className="h-full sticky top-0"
         topics={topics}

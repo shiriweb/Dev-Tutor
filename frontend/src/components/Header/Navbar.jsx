@@ -1,48 +1,47 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="py-3 px-10">
-      <div className="flex items-center rounded-full bg-teal-900 px-3 py-2">
-        {/* Logo */}
-        <div className="flex items-center space-x-2">
-          <span className="ml-4 text-2xl font-bold">
-            <span className="text-white">Dev</span>
-            <span className="text-red-500">Tutor</span>
-          </span>
+    <nav className="py-3 px-4 sm:px-10 sticky top-0 z-50 backdrop-blur-md bg-white/30">
+      <div className="flex items-center justify-between bg-gradient-to-r from-teal-800 via-teal-700 to-teal-900 px-3 py-2 rounded-full">
+        <div className="text-2xl font-bold">
+          <span className="text-white">Dev</span>
+          <span className="text-red-500">Tutor</span>
         </div>
 
-        {/* Nav Links (desktop) */}
-        <div className="hidden lg:flex ml-48 space-x-8 text-white font-medium">
+        <div className="hidden lg:flex space-x-8 text-white font-medium">
           <Link to="/" className="hover:text-red-500">
             Home
           </Link>
-          <Link to="/features" className="hover:text-red-500">
+          <a href="#features" className="hover:text-red-500">
             Features
-          </Link>
-          <Link to="/about" className="hover:text-red-500">
-            About
-          </Link>
+          </a>
+          <a href="#how-it-works" className="hover:text-red-500">
+            How It Works
+          </a>
           <Link to="/dashboard" className="hover:text-red-500">
             Dashboard
           </Link>
         </div>
 
-        <div className="flex space-x-4 ml-auto mr-2 font-semibold lg:flex sm:ml-auto sm:gap-x-2)">
-          <button className="text-white hover:bg-white hover:text-teal-700">
-            Log In
-          </button>
-          <button className="bg-red-500 text-white border border-black px-3 py-1 rounded-full hover:text-[#D2A679] hover:bg-white">
-            Sign Up
-          </button>
+        <div className="hidden lg:flex space-x-3 font-semibold">
+          <Link to="/signin">
+            <button className="text-white hover:text-red-500 mt-1 ">
+              Sign In
+            </button>
+          </Link>
+          <Link to="/signin">
+F            <button className="bg-red-500 text-white border border-black px-3 py-1 rounded-full hover:bg-red-600">
+              Sign Up
+            </button>
+          </Link>
         </div>
 
-        {/* Other device layout */}
-        <div className="lg:hidden ml-auto">
+        <div className="lg:hidden">
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="text-white text-2xl"
@@ -52,20 +51,43 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isOpen && (
-        <div className="lg:hidden mt-2 space-y-2 flex flex-col text-white font-medium">
-          <Link to="/" className="hover:text-[#00C3D0]">
+        <div className="lg:hidden flex flex-col mt-2 space-y-2 bg-teal-800/80 rounded-xl p-4 text-white font-medium">
+          <Link
+            to="/"
+            onClick={() => setIsOpen(false)}
+            className="hover:text-red-500 py-2 px-3 rounded hover:bg-teal-700 transition"
+          >
             Home
           </Link>
-          <Link to="/features" className="hover:text-[#00C3D0]">
+          <a
+            href="#features"
+            onClick={() => setIsOpen(false)}
+            className="hover:text-red-500 py-2 px-3 rounded hover:bg-teal-700 transition"
+          >
             Features
-          </Link>
-          <Link to="/about" className="hover:text-[#00C3D0]">
-            About
-          </Link>
-          <Link to="/dashboard" className="hover:text-[#00C3D0]">
+          </a>
+          <a
+            href="#how-it-works"
+            onClick={() => setIsOpen(false)}
+            className="hover:text-red-500 py-2 px-3 rounded hover:bg-teal-700 transition"
+          >
+            How It Works
+          </a>
+          <Link to="/dashboard" className="hover:text-red-500">
             Dashboard
+          </Link>
+
+          <Link to="/signin">
+            <button className="text-white hover:text-red-500 py-2 px-3 rounded hover:bg-teal-700 transition text-left">
+              Sign In
+            </button>
+          </Link>
+
+          <Link to="/signin">
+            <button className="text-white hover:text-red-500 py-2 px-3 rounded hover:bg-teal-700 transition text-left">
+              Sign Up{" "}
+            </button>
           </Link>
         </div>
       )}

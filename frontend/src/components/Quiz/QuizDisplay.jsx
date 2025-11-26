@@ -18,34 +18,33 @@ const QuizDisplay = () => {
 
   const question = quiz.questions[currentQuestionIndex];
 
-  const handleOptionClick = (option) => {
-    if (showFeedback) return;
+const handleOptionClick = (option) => {
+  if (showFeedback) return; // Prevent double click
 
-    setSelectedOption(option);
-    setShowFeedback(true);
+  setSelectedOption(option);
+  setShowFeedback(true);
 
-    if (option === question.correctAnswer) {
-      setScore((prev) => prev + 1);
+  const isCorrect = option === question.correctAnswer;
+  if (isCorrect) setScore((prev) => prev + 1);
+
+  // Wait 1.5 seconds to show feedback
+  setTimeout(() => {
+    if (currentQuestionIndex + 1 < quiz.questions.length) {
+      // Move to next question
+      setCurrentQuestionIndex((prev) => prev + 1);
+      setSelectedOption(null);
+      setShowFeedback(false);
+    } else {
+      // Last question → navigate to score
+      navigate("/score", {
+        state: {
+          score: isCorrect ? score + 1 : score,
+          total: quiz.questions.length,
+        },
+      });
     }
-
-    // Wait 1.5 seconds to show feedback
-    setTimeout(() => {
-      // If there are more questions
-      if (currentQuestionIndex + 1 < quiz.questions.length) {
-        setShowFeedback(false);
-        setCurrentQuestionIndex((prev) => prev + 1);
-        setSelectedOption(null);
-      } else {
-        // LAST QUESTION → don't hide feedback early
-        navigate("/score", {
-          state: {
-            score,
-            total: quiz.questions.length,
-          },
-        });
-      }
-    }, 1500);
-  };
+  }, 1500);
+};
 
   const getOptionClass = (option) => {
     if (!showFeedback)

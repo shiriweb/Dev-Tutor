@@ -166,8 +166,9 @@ const ChatInterface = ({
           placeholder="Ask Anything"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          className="flex-1 p-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
+          className={`flex-1 p-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400`}
           onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+          disabled={isTyping}
         />
         <button
           onClick={handleSendMessage}

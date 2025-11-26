@@ -45,7 +45,7 @@ const HowItWorks = () => {
         {steps.map((step, index) => (
           <div
             key={index}
-            className="bg-[#f5f5f5] text-center p-6 border rounded-xl shadow-md hover:scale-105 transition-transform duration-300 cursor-pointer"
+            className="bg-[#f5f5f5] text-center p-6 border rounded-xl shadow-md hover:scale-105 duration-300 cursor-pointer"
           >
             {step.icon}
             <h3 className="font-bold text-lg mb-2">{step.title}</h3>

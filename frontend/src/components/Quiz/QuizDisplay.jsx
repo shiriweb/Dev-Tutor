@@ -30,16 +30,16 @@ const QuizDisplay = () => {
 
     // Wait 1.5 seconds to show feedback
     setTimeout(() => {
-      setShowFeedback(false);
-
-      // Move to next question or show score
+      // If there are more questions
       if (currentQuestionIndex + 1 < quiz.questions.length) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
+        setShowFeedback(false);
+        setCurrentQuestionIndex((prev) => prev + 1);
         setSelectedOption(null);
       } else {
+        // LAST QUESTION → don't hide feedback early
         navigate("/score", {
           state: {
-            score: option === question.correctAnswer ? score + 1 : score,
+            score,
             total: quiz.questions.length,
           },
         });
@@ -49,7 +49,7 @@ const QuizDisplay = () => {
 
   const getOptionClass = (option) => {
     if (!showFeedback)
-      return "border p-2 rounded hover:bg-gray-200 cursor-pointer";
+      return "border p-2 rounded hover:bg-gray-200 cursor-pointer hover:scale-105 transition-transform duration-300";
 
     if (option === question.correctAnswer)
       return "border p-2 rounded bg-green-500 text-white";
@@ -61,7 +61,15 @@ const QuizDisplay = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-20 p-6 bg-[#f5f5f5] rounded-xl shadow-lg">
+    <div
+      className="
+  max-w-md mx-auto mt-20 p-6 bg-[#f5f5f5] rounded-xl shadow-lg
+  h-auto
+  md:h-[350px]
+  lg:h-[350px]
+  flex flex-col justify-between 
+"
+    >
       <h3 className="text-sm font-medium text-gray-600 mb-2">
         Question {currentQuestionIndex + 1} of {quiz.questions.length}
       </h3>

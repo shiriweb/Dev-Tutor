@@ -5,13 +5,13 @@ const FeaturesSection = () => {
   return (
     <div
       id="features"
-      className="relative bg-[#f5f5f5] py-12 px-4 sm:px-8 md:px-20 overflow-hidden"
+      className="relative bg-[#f5f5f5] py-12 px-4 sm:px-8 md:px-28 overflow-hidden"
     >
       <div className="absolute top-10 left-[-50px] w-60 h-60 sm:w-72 sm:h-64 bg-gradient-to-b from-[#CFF6F2] to-[#E0FAFA] rounded-full blur-3xl z-0"></div>
       <div className="absolute bottom-10 right-[-60px] w-72 h-72 sm:w-80 sm:h-80 bg-gradient-to-b from-[#CFF6F2] to-[#E0FAFA] rounded-full blur-3xl z-0"></div>
 
-      <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full md:w-1/2 md:h-1/2">
+      <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 w-full md:w-1/2 md:h-1/2">
           <div className="bg-gradient-to-br from-teal-900 via-teal-700 to-teal-900 text-white text-center h-44 w-full p-3 border-t-8 border-l-4 border-red-500 shadow-lg rounded-3xl rounded-br-none hover:scale-105 transition-transform duration-300 cursor-pointer">
             <FaRobot className="text-5xl mx-auto" />
             <h2 className="font-bold mt-2 text-sm">Programming Assistance</h2>

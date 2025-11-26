@@ -1,8 +1,10 @@
 import React, { useRef, useState, useEffect } from "react";
 import { FaPaperPlane } from "react-icons/fa";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import QuizGenerator from "../Quiz/QuizGenerator";
+
 const ChatInterface = ({
   token,
   selectedTopic,
@@ -16,17 +18,22 @@ const ChatInterface = ({
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
 
+  // Log current chat ID whenever it changes
+  useEffect(() => {
+    console.log("Current Chat ID changed:", currentChatId);
+  }, [currentChatId]);
+
   // Fetch messages for the current chat
   useEffect(() => {
     const fetchMessages = async () => {
-      console.log("Selected Topic inside useEffect:", selectedTopic);
-
+      console.log("Selected Topic:", selectedTopic);
       if (!selectedTopic) return;
+
       if (!currentChatId) {
         setMessages([
           {
             sender: "assistant",
-            content: "Hello, I am Dev-Tutor. How can I help you?",
+            content: "Hello! I am Dev-Tutor. How can I help you?",
           },
         ]);
         return;
@@ -37,11 +44,12 @@ const ChatInterface = ({
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = res.data;
+
         if (!data.messages || data.messages.length === 0) {
           setMessages([
             {
               sender: "assistant",
-              content: "Hello, I am Dev-Tutor. How can I help you?",
+              content: "Hello! I am Dev-Tutor. How can I help you?",
             },
           ]);
         } else {
@@ -62,38 +70,45 @@ const ChatInterface = ({
 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
-    console.log(selectedTopic);
 
-    const messageToSend = { sender: "user", content: newMessage };
-    setMessages((prev) => [...prev, messageToSend]);
+    const messageContent = newMessage;
     setNewMessage("");
+    setIsTyping(true);
+
+    // Optimistically show user's message
+    setMessages((prev) => [
+      ...prev,
+      { sender: "user", content: messageContent },
+    ]);
 
     try {
-      setIsTyping(true);
-
       let res;
+
       if (currentChatId) {
-        // Add message to existing chat
+        // Existing chat → add message
         res = await axios.post(
           `/api/chats/${currentChatId}/messages`,
-          { content: messageToSend.content, topic: selectedTopic },
+          { content: messageContent },
           { headers: { Authorization: `Bearer ${token}` } }
         );
       } else {
-        // Create new chat
+        // No chat yet → create new chat
         res = await axios.post(
-          `/api/chats`,
-          { topic: selectedTopic, content: messageToSend.content },
+          "/api/chats",
+          { topic: selectedTopic, content: messageContent },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        setCurrentChatId(res.data.chat._id);
+
+        const newChatId = res.data.chat._id;
+        setCurrentChatId(newChatId); // update state
+        console.log("New Chat Created with ID:", newChatId);
       }
 
-      const aiResponse = res.data.chatMessage || "AI did not respond";
-      setMessages((prev) => [
-        ...prev,
-        { sender: "assistant", content: aiResponse },
-      ]);
+      // Log chat ID from backend
+      console.log("Chat ID from backend:", res.data.chat._id);
+
+      // Update messages from backend
+      setMessages(res.data.chat.messages);
     } catch (error) {
       console.error("Error sending message:", error);
     } finally {
@@ -102,7 +117,7 @@ const ChatInterface = ({
   };
 
   return (
-    <div className="flex-1 flex flex-col p-2 w-full bg-gradient-to-b from-teal-800 via-teal-700 to-teal-900 rounded-2xl shadow-lg ml-2 max-h-screen">
+    <div className="flex-1 flex flex-col p-2 w-full bg-gradient-to-b from-teal-800 via-teal-700 to-teal-900 rounded-2xl shadow-lg ml-1">
       <h2 className="text-white ml-2 mb-2 font-semibold">
         Topic : {selectedTopic}
       </h2>
@@ -111,14 +126,14 @@ const ChatInterface = ({
           <div
             key={index}
             className={`flex ${
-              msg.sender === "user" ? "justify-end " : "justify-start"
+              msg.sender === "user" ? "justify-end" : "justify-start"
             } mb-3 w-full`}
           >
             <div
               className={`p-2 rounded-xl max-w-[60%] mb-2 ${
                 msg.sender === "user"
                   ? "bg-teal-300 text-teal-900"
-                  : "bg-gray-200 text-gray-900"
+                  : "bg-gray-200 text-gray-900 max-w-xl"
               }`}
             >
               {msg.sender === "assistant" ? (
@@ -132,11 +147,16 @@ const ChatInterface = ({
 
         {isTyping && (
           <div className="flex justify-start">
-            <div className="p-2 rounded-xl max-w-xs bg-gray-200 text-gray-900 italic">
+            <div className="p-2 rounded-xl max-w-xs bg-gray-200 text-gray-900 italic flex items-center gap-2">
+              <AiOutlineLoading3Quarters
+                size={22}
+                className="animate-spin text-gray-400"
+              />
               AI is typing...
             </div>
           </div>
         )}
+
         <div ref={messagesEndRef} />
       </div>
 

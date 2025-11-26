@@ -4,6 +4,7 @@ import ChatInterface from "../components/Chat/ChatInterface";
 import RightPanel from "../components/Chat/RightPanel";
 import LoginRegisterForm from "../components/Auth/LoginRegisterForm";
 import axios from "axios";
+import { FaSpinner } from "react-icons/fa";
 
 const Dashboard = () => {
   const [topics] = useState(["JavaScript", "React", "Python", "HTML/CSS"]);
@@ -20,7 +21,7 @@ const Dashboard = () => {
     return <LoginRegisterForm token={token} setToken={setToken} />;
   }
 
-  const fetchChats = async () => {
+  const fetchChats = async (topic) => {
     if (!token) return;
     try {
       const res = await axios.get("/api/chats", {
@@ -28,9 +29,16 @@ const Dashboard = () => {
       });
 
       const filteredChat = res.data.chats.filter(
-        (chat) => chat.topic === selectedTopic
+        (chat) => chat.topic === topic
       );
+
       setChatHistory(filteredChat);
+
+      if (!currentChatId && filteredChat.length > 0) {
+        setCurrentChatId(filteredChat[0]._id);
+      }
+
+      return filteredChat;
     } catch (error) {
       console.log("Error fetching chats: ", error);
     }
@@ -49,18 +57,23 @@ const Dashboard = () => {
       );
 
       const newChat = res.data.chat;
+
+      // Add new chat to history and select it immediately
       setChatHistory((prev) => [...prev, newChat]);
       setCurrentChatId(newChat._id);
-      await fetchChats(selectedTopic);
+
+      // Refetch chats but do NOT overwrite currentChatId
+      await fetchChats();
     } catch (error) {
       console.log("Error creating new Chat: ", error);
     }
   };
 
   return (
-    <div className="flex min-h-screen p-1 bg-[#f5f5f5] top-0 sticky">
+    <div className="relative flex h-[530px] p-1 bg-[#f5f5f5]">
+      {/* Left Panel */}
       <LeftPanel
-        className="h-full sticky top-0"
+        className="h-full overflow-y-auto"
         topics={topics}
         selectedTopic={selectedTopic}
         fetchChats={fetchChats}
@@ -68,15 +81,18 @@ const Dashboard = () => {
         setSelectedTopic={(topic) => {
           setSelectedTopic(topic);
           setCurrentChatId(null);
+          fetchChats(topic);
         }}
       />
 
+      {/* Chat Interface */}
       <ChatInterface
-        className="h-full"
+        className="h-full overflow-y-auto"
         token={token}
         currentChatId={currentChatId}
         setCurrentChatId={setCurrentChatId}
         selectedTopic={selectedTopic}
+        z
         quiz={quiz}
         setQuiz={setQuiz}
         loading={loading}
@@ -85,8 +101,9 @@ const Dashboard = () => {
         setError={setError}
       />
 
+      {/* Right Panel */}
       <RightPanel
-        className="h-full sticky top-0"
+        className="h-full overflow-y-auto"
         token={token}
         currentChatId={currentChatId}
         setCurrentChatId={setCurrentChatId}
@@ -99,6 +116,16 @@ const Dashboard = () => {
         fetchChats={fetchChats}
         handleNewChat={handleNewChat}
       />
+
+      {/* Full-screen loading overlay */}
+      {loading && (
+        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="text-white text-lg flex items-center gap-2">
+            <FaSpinner className="animate-spin text-3xl" />
+            Generating Quiz...
+          </div>
+        </div>
+      )}
     </div>
   );
 };

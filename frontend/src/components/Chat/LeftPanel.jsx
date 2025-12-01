@@ -1,5 +1,5 @@
 import React from "react";
-import { FaGraduationCap } from "react-icons/fa";
+import { FaGraduationCap , FaChartLine} from "react-icons/fa";
 import { Link } from "react-router-dom";
 const LeftPanel = ({
   topics = [],
@@ -40,6 +40,12 @@ const LeftPanel = ({
           </li>
         ))}
       </ul>
+      <Link to="/quiz-stats">
+        <button className="flex items-center gap-2 w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 px-4 rounded mt-2">
+          <FaChartLine />
+          Statistics
+        </button>{" "}
+      </Link>
     </div>
   );
 };

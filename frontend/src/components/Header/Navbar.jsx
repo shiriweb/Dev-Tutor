@@ -6,8 +6,8 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="py-3 px-4 sm:px-10 sticky top-0 z-50 backdrop-blur-md bg-white/30">
-      <div className="flex items-center justify-between bg-gradient-to-r from-teal-800 via-teal-700 to-teal-900 px-3 py-2 rounded-full">
+    <nav className="py-3 px-4 sm:px-10 top-0 z-50  ">
+      <div className="flex items-center justify-between px-3 py-2 rounded-full">
         <div className="text-2xl font-bold ml-5">
           <span className="text-white">Dev</span>
           <span className="text-red-500">Tutor</span>

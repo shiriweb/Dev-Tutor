@@ -9,6 +9,8 @@ import Dashboard from "./pages/Dashboard";
 import HomePage from "./pages/HomePage";
 import Quizzes from "./pages/Quizzes";
 import ScoreBoard from "./components/Quiz/ScoreBoard";
+import QuizStatsPage from "./components/Quiz/QuizStatsPage";
+import SingleQuizPage from "./components/Quiz/SingleQuizPage";
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
@@ -39,6 +41,18 @@ const App = () => {
         <Route
           path="/score"
           element={token ? <ScoreBoard /> : <Navigate to="/signin" replace />}
+        />
+        <Route
+          path="/quiz-stats"
+          element={
+            token ? <QuizStatsPage /> : <Navigate to="/signin" replace />
+          }
+        />
+        <Route
+          path="/quiz/:id"
+          element={
+            token ? <SingleQuizPage /> : <Navigate to="/signin" replace />
+          }
         />
       </Routes>
 

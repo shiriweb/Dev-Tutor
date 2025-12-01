@@ -17,6 +17,7 @@ const QuizGenerator = ({
   const handleGenerateQuiz = async () => {
     if (!currentChatId) {
       toast.error("Please chat first inorder to generate quiz");
+      return;
     }
     setLoading(true);
 

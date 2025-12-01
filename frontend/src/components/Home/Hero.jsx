@@ -19,15 +19,15 @@ const Hero = () => {
   }, []);
 
   return (
-    <div className="w-full h-90 flex flex-col-reverse md:flex-row lg:flex-row justify-between  bg-gradient-to-b from-[#CFF6F2] to-[#E0FAFA] p-2 ">
+    <div className="w-full h-90 flex flex-col-reverse md:flex-row lg:flex-row justify-between p-2 ">
       <div className="flex-1 p-2 lg:mt-2">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-teal-900 text-center md:text-left md:ml-14 lg:ml-14">
+        <h1 className="text-2xl sm:text-4xl lg:text-5xl font-bold text-white text-center md:text-left md:ml-14 lg:ml-14">
           Transforming <span className="text-red-500"> Knowledge </span>into
           <span className="text-red-500"> Mastery</span> Through AI-Driven
           Innovation
         </h1>
 
-        <p className="text-base text-gray-700 mt-3 text-center sm:text-center md:text-left md:ml-14 lg:ml-14">
+        <p className="text-white mt-3 text-center sm:text-center md:text-left md:ml-14 lg:ml-14">
           Engage with AI, explore concepts interactively, generate quizzes, and
           track your learning progress all in one smart and intuitive platform
           designed to make learning efficient and meaningful.

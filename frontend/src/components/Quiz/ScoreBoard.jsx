@@ -26,7 +26,13 @@ const ScoreBoard = () => {
           className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded"
           onClick={() => navigate("/dashboard")}
         >
-          Go to Dashboard
+          Back to Dashboard
+        </button>
+        <button
+          className="bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 px-4 rounded"
+          onClick={() => navigate("/quiz-stats")}
+        >
+          Statistics
         </button>
       </div>
     </div>

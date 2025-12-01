@@ -107,7 +107,6 @@ const ChatInterface = ({
       // Log chat ID from backend
       console.log("Chat ID from backend:", res.data.chat._id);
 
-      // Update messages from backend
       setMessages(res.data.chat.messages);
     } catch (error) {
       console.error("Error sending message:", error);
@@ -127,17 +126,59 @@ const ChatInterface = ({
             key={index}
             className={`flex ${
               msg.sender === "user" ? "justify-end" : "justify-start"
-            } mb-3 w-full`}
+            }  w-full`}
           >
             <div
-              className={`p-2 rounded-xl max-w-[60%] mb-2 ${
+              className={`p-2 rounded-xl shadow-md mb-2 ${
                 msg.sender === "user"
-                  ? "bg-teal-300 text-teal-900"
-                  : "bg-gray-200 text-gray-900 max-w-xl"
+                  ? "bg-teal-300 text-teal-900 0 max-w-[60%]"
+                  : "bg-white "
               }`}
             >
               {msg.sender === "assistant" ? (
-                <ReactMarkdown>{msg.content}</ReactMarkdown>
+                <div className="">
+                  <ReactMarkdown
+                    components={{
+                      code({ inline, children }) {
+                        return inline ? (
+                          <code className="bg-gray-700 text-yellow-300 px-1 rounded">
+                            {children}
+                          </code>
+                        ) : (
+                          <pre className="bg-gray-800 text-green-300 p-4 rounded-lg overflow-x-auto shadow-md">
+                            <code className="font-mono">{children}</code>
+                          </pre>
+                        );
+                      },
+                      p({ children }) {
+                        return (
+                          <p className="mb-2 leading-relaxed">{children}</p>
+                        );
+                      },
+                      li({ children }) {
+                        return (
+                          <li className="ml-6 mb-1 list-disc">{children}</li>
+                        );
+                      },
+                      h1({ children }) {
+                        return (
+                          <h1 className="text-xl font-bold mt-4 mb-2">
+                            {children}
+                          </h1>
+                        );
+                      },
+                      h2({ children }) {
+                        return (
+                          <h2 className="text-lg font-semibold mt-3 mb-2">
+                            {children}
+                          </h2>
+                        );
+                      },
+                    }}
+                  >
+                    {msg.content}
+                  </ReactMarkdown>
+                </div>
               ) : (
                 msg.content
               )}

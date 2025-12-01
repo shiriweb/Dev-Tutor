@@ -7,7 +7,7 @@ import Footer from "../components/Header/Footer";
 
 const HomePage = () => {
   return (
-    <div className="bg-gradient-to-b from-[#CFF6F2] to-[#E0FAFA]">
+    <div className="bg-gradient-to-b from-teal-800 via-teal-700 to-teal-900">
       <Navbar />
         <Hero />
 

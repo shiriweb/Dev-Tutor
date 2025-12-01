@@ -10,7 +10,6 @@ const validateRegister = (req, res, next) => {
 
   if (password.length < 6)
     return res.status(400).json({ error: "Password must be at least 6 characters" });
-
   next();
 };
 module.exports = { validateRegister };

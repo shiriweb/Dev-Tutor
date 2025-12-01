@@ -35,9 +35,9 @@ const HowItWorks = () => {
   return (
     <div
       id="how-it-works"
-      className="py-12 px-4 sm:px-8 md:px-20 bg-gradient-to-b from-[#CFF6F2] to-[#E0FAFA]"
+      className="py-12 px-4 sm:px-8 md:px-20 bg-gradient-to-b from-teal-800 via-teal-700 to-teal-900"
     >
-      <h2 className="text-3xl font-bold text-teal-900 text-center mb-12">
+      <h2 className="text-3xl font-bold text-white text-center mb-12">
         How It Works
       </h2>
 

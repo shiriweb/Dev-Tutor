@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { QuizContext } from "../../context/QuizContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const QuizDisplay = () => {
   const { quiz } = useContext(QuizContext);
@@ -9,6 +10,7 @@ const QuizDisplay = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [score, setScore] = useState(0);
+  const [answers, setAnswers] = useState([]);
   const navigate = useNavigate();
 
   if (!quiz) {
@@ -18,57 +20,60 @@ const QuizDisplay = () => {
 
   const question = quiz.questions[currentQuestionIndex];
 
-const handleOptionClick = (option) => {
-  if (showFeedback) return; // Prevent double click
+  const handleOptionClick = (option) => {
+    if (showFeedback) return;
 
-  setSelectedOption(option);
-  setShowFeedback(true);
+    const isCorrect =
+      option.trim().toLowerCase() === question.correctAnswer.trim().toLowerCase();
+    if (isCorrect) setScore((prev) => prev + 1);
 
-  const isCorrect = option === question.correctAnswer;
-  if (isCorrect) setScore((prev) => prev + 1);
+    const newAnswers = [...answers, option];
+    setAnswers(newAnswers);
 
-  // Wait 1.5 seconds to show feedback
-  setTimeout(() => {
-    if (currentQuestionIndex + 1 < quiz.questions.length) {
-      // Move to next question
-      setCurrentQuestionIndex((prev) => prev + 1);
-      setSelectedOption(null);
-      setShowFeedback(false);
-    } else {
-      // Last question → navigate to score
-      navigate("/score", {
-        state: {
-          score: isCorrect ? score + 1 : score,
-          total: quiz.questions.length,
-        },
-      });
-    }
-  }, 1500);
-};
+    setSelectedOption(option);
+    setShowFeedback(true);
+
+    setTimeout(async () => {
+      if (currentQuestionIndex + 1 < quiz.questions.length) {
+        setCurrentQuestionIndex((prev) => prev + 1);
+        setSelectedOption(null);
+        setShowFeedback(false);
+      } else {
+        try {
+          const token = localStorage.getItem("token");
+          await axios.post(
+            `/api/quizzes/${quiz._id}/attempt`,
+            { answers: newAnswers },
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          toast.success("Quiz attempt saved!");
+        } catch (err) {
+          console.error("Failed to save quiz attempt:", err);
+          toast.error("Failed to save quiz attempt.");
+        }
+
+        navigate("/score", {
+          state: { score, total: quiz.questions.length },
+        });
+      }
+    }, 1200);
+  };
 
   const getOptionClass = (option) => {
     if (!showFeedback)
       return "border p-2 rounded hover:bg-gray-200 cursor-pointer hover:scale-105 transition-transform duration-300";
 
-    if (option === question.correctAnswer)
+    if (option.trim().toLowerCase() === question.correctAnswer.trim().toLowerCase())
       return "border p-2 rounded bg-green-500 text-white";
 
-    if (option === selectedOption && option !== question.correctAnswer)
+    if (selectedOption && option === selectedOption)
       return "border p-2 rounded bg-red-500 text-white";
 
-    return "border p-2 rounded cursor-not-allowed";
+    return "border p-2 rounded cursor-not-allowed text-gray-400";
   };
 
   return (
-    <div
-      className="
-  max-w-md mx-auto mt-20 p-6 bg-[#f5f5f5] rounded-xl shadow-lg
-  h-auto
-  md:h-[350px]
-  lg:h-[350px]
-  flex flex-col justify-between 
-"
-    >
+    <div className="max-w-md mx-auto mt-20 p-6 bg-[#f5f5f5] rounded-xl shadow-lg h-auto md:h-[350px] lg:h-[350px] flex flex-col justify-between">
       <h3 className="text-sm font-medium text-gray-600 mb-2">
         Question {currentQuestionIndex + 1} of {quiz.questions.length}
       </h3>

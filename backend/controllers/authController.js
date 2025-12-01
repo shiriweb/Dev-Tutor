@@ -3,10 +3,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const config = require("../config/config");
 
-// Register new user
 const register = async (req, res) => {
   const { username, email, password } = req.body;
-
   try {
     const existingUser = await User.findOne({
       $or: [{ email }, { username }],
@@ -31,7 +29,6 @@ const register = async (req, res) => {
   }
 };
 
-// Login user and return token
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -47,7 +44,9 @@ const login = async (req, res) => {
       expiresIn: "2d",
     });
 
-    return res.status(200).json({ message: "User logged in successfully", token });
+    return res
+      .status(200)
+      .json({ message: "User logged in successfully", token });
   } catch (err) {
     return res
       .status(500)
@@ -55,8 +54,4 @@ const login = async (req, res) => {
   }
 };
 
-const logout = (_, res) => {
-  return res.status(200).json({ message: "Logout handled on frontend" });
-};
-
-module.exports = { register, login, logout };
+module.exports = { register, login };

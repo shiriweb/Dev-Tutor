@@ -14,10 +14,6 @@ app.use(express.json());
 app.use(cors());
 connectDB();
 
-// Use Google DNS
-
-// MONGODB CONNECTION
-
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/chats", chatRoutes);

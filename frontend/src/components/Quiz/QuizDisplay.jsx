@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { QuizContext } from "../../context/QuizContext";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -13,18 +13,24 @@ const QuizDisplay = () => {
   const [answers, setAnswers] = useState([]);
   const navigate = useNavigate();
 
-  if (!quiz) {
-    toast.error("Quiz not available");
-    return null;
-  }
+  // ❗ Fix: show toast in effect, NOT during render
+  useEffect(() => {
+    if (!quiz) {
+      toast.error("Quiz not available");
+    }
+  }, [quiz]);
+
+  // Prevent crash before quiz loads
+  if (!quiz) return null;
 
   const question = quiz.questions[currentQuestionIndex];
 
-  const handleOptionClick = (option) => {
+  const handleOptionClick = async (option) => {
     if (showFeedback) return;
 
     const isCorrect =
       option.trim().toLowerCase() === question.correctAnswer.trim().toLowerCase();
+
     if (isCorrect) setScore((prev) => prev + 1);
 
     const newAnswers = [...answers, option];
@@ -73,11 +79,13 @@ const QuizDisplay = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-20 p-6 bg-[#f5f5f5] rounded-xl shadow-lg h-auto md:h-[350px] lg:h-[350px] flex flex-col justify-between">
+    <div className="max-w-md mx-auto mt-20 p-6 bg-[#f5f5f5] rounded-xl shadow-lg">
       <h3 className="text-sm font-medium text-gray-600 mb-2">
         Question {currentQuestionIndex + 1} of {quiz.questions.length}
       </h3>
+
       <h2 className="text-lg font-semibold mb-4">{question.question}</h2>
+
       <div className="flex flex-col gap-2">
         {question.options.map((option, idx) => (
           <div

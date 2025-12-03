@@ -62,7 +62,6 @@ const Dashboard = () => {
       setChatHistory((prev) => [...prev, newChat]);
       setCurrentChatId(newChat._id);
 
-      // Refetch chats but do NOT overwrite currentChatId
       await fetchChats();
     } catch (error) {
       console.log("Error creating new Chat: ", error);
@@ -70,7 +69,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="relative flex h-[530px] p-1 bg-[#f5f5f5]">
+    <div className="relative flex h-screen p-1 bg-[#f5f5f5]">
       {/* Left Panel */}
       <LeftPanel
         className="h-full overflow-y-auto"

@@ -5,7 +5,6 @@ const config = require("../config/config.js");
 
 const ai = new GoogleGenAI({ apiKey: config.GEMINI_API_KEY });
 
-// Create a quiz
 const createQuiz = async (req, res) => {
   const { chatId } = req.body;
   const userId = req.userId;
@@ -22,14 +21,16 @@ const createQuiz = async (req, res) => {
       .join("\n");
 
     const prompt = `Generate 5 multiple-choice questions from this chat about ${chat.topic}.
-Each question should have 4 options and indicate the correct answer.
-Return as JSON like:
-[
-  { "question": "Q?", "options": ["A","B","C","D"], "correctAnswer": "A" }
-] Chat:${chatHistory}`;
+    Ignore any content not related to ${chat.topic}.
+    If the content is not related to the ${chat.topic},reply politely that no relevant content found for quiz generation..
+    Each question should have 4 options and indicate the correct answer.
+    Return as JSON like:
+    [
+      { "question": "Q?", "options": ["A","B","C","D"], "correctAnswer": "A" }
+    ] Chat:${chatHistory}`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.0-flash-lite",
+      model: "gemini-2.5-flash-lite",
       contents: prompt,
     });
 
@@ -70,7 +71,6 @@ const getQuizzes = async (req, res) => {
   }
 };
 
-// Submit a quiz attempt
 const submitAttemptQuiz = async (req, res) => {
   const { answers } = req.body;
   const quizId = req.params.id;
@@ -104,13 +104,10 @@ const getQuizStats = async (req, res) => {
     const stats = quizzes.map((quiz) => {
       const attempts = quiz.attempts.length;
       const totalScore = quiz.attempts.reduce((sum, a) => sum + a.score, 0);
-      const maxScore = quiz.questions.length; // always 5
-
-      // ⭐ Average in percentage
+      const maxScore = quiz.questions.length;
       const averageScore =
         attempts > 0 ? Math.round((totalScore / attempts / maxScore) * 100) : 0;
 
-      // ⭐ Latest score as RAW number (0–5)
       const latestScore = attempts > 0 ? quiz.attempts[attempts - 1].score : 0;
 
       return {
@@ -118,8 +115,8 @@ const getQuizStats = async (req, res) => {
         title: quiz.title,
         topic: quiz.topic,
         attempts,
-        averageScore, // percentage
-        latestScore, // raw number
+        averageScore,
+        latestScore,
       };
     });
 

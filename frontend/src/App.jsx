@@ -24,20 +24,28 @@ const App = () => {
     <>
       <Routes>
         <Route path="/" element={<HomePage />} />
+
         <Route
           path="/signin"
           element={
             <LoginRegisterForm setToken={handleSetToken} token={token} />
           }
         />
+
         <Route
           path="/dashboard"
           element={token ? <Dashboard /> : <Navigate to="/signin" replace />}
-        />{" "}
+        />
+
+        <Route
+          path="/dashboard/:chatId"
+          element={token ? <Dashboard /> : <Navigate to="/signin" replace />}
+        />
+
         <Route
           path="/quiz"
           element={token ? <Quizzes /> : <Navigate to="/signin" replace />}
-        />{" "}
+        />
         <Route
           path="/score"
           element={token ? <ScoreBoard /> : <Navigate to="/signin" replace />}

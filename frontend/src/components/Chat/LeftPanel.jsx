@@ -1,17 +1,23 @@
 import React from "react";
-import { FaGraduationCap , FaChartLine} from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { FaGraduationCap, FaChartLine } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+
 const LeftPanel = ({
   topics = [],
   selectedTopic,
   setSelectedTopic,
   fetchChats,
-  handleNewChat,
 }) => {
+  const navigate = useNavigate();
+
   const handleTopicClick = async (topic) => {
     setSelectedTopic(topic);
-    // await handleNewChat();
-    await fetchChats(topic);
+
+    const chats = await fetchChats(topic);
+
+    if (chats && chats.length > 0) {
+      navigate(`/dashboard/${chats[0]._id}`);
+    }
   };
 
   return (
@@ -27,6 +33,7 @@ const LeftPanel = ({
         <FaGraduationCap className="mr-2" />
         Topics
       </h2>
+
       <ul className="space-y-2">
         {topics.map((topic) => (
           <li
@@ -40,11 +47,12 @@ const LeftPanel = ({
           </li>
         ))}
       </ul>
+
       <Link to="/quiz-stats">
         <button className="flex items-center gap-2 w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 px-4 rounded mt-2">
           <FaChartLine />
           Statistics
-        </button>{" "}
+        </button>
       </Link>
     </div>
   );

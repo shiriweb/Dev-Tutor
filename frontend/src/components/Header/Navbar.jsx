@@ -29,11 +29,7 @@ const Navbar = () => {
         </div>
 
         <div className="hidden lg:flex space-x-3 font-semibold">
-          {/* <Link to="/signin">
-            <button className="text-white hover:text-red-500 mt-1 ">
-              Sign In
-            </button>
-          </Link> */}
+      
           <Link to="/signin">
             <button className="bg-red-500 text-white border border-red-500 px-3 py-1  mr-5 rounded-full hover:bg-red-600">
               Sign Up

@@ -34,8 +34,12 @@ const RightPanel = ({
       const res = await axios.get(`/api/chats?topic=${topic || ""}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       setChatHistory(res.data.chats);
-      if (res.data.chats.length > 0) setCurrentChatId(res.data.chats[0]._id);
+
+      if (res.data.chats.length > 0) {
+        setCurrentChatId(res.data.chats[0]._id);
+      }
     } catch (error) {
       console.log("Error fetching chats:", error);
     }
@@ -45,12 +49,14 @@ const RightPanel = ({
     if (!token || !selectedTopic) return;
 
     try {
-      await axios.post(
+      const res = await axios.post(
         "/api/chats",
         { topic: selectedTopic, content: "" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      fetchChats(selectedTopic); // Refetch chats
+
+      fetchChats(selectedTopic);
+      navigate(`/dashboard/${res.data.chat._id}`);
     } catch (error) {
       console.log("Error creating new chat:", error);
     }
@@ -70,7 +76,7 @@ const RightPanel = ({
   }, [token, selectedTopic]);
 
   return (
-    <div className="w-32 lg:block md:w-60 lg:w-60 bg-gradient-to-b from-teal-800 via-teal-700 to-teal-900 rounded-2xl shadow-lg p-2 text-white ml-1">
+    <div className="w-60 bg-teal-800 rounded-2xl shadow-lg p-2 text-white ml-1">
       <div className="flex flex-col h-full">
         <div className="flex items-center justify-between mb-2 p-2">
           <div className="flex items-center gap-2 font-semibold text-sm">
@@ -83,7 +89,7 @@ const RightPanel = ({
 
         <button
           onClick={handleNewChat}
-          className="w-full flex items-center justify-center gap-2 p-2 bg-teal-900 rounded-2xl font-semibold focus:bg-teal-950 shadow-md"
+          className="w-full flex items-center justify-center gap-2 p-2 bg-teal-900 rounded-2xl font-semibold"
         >
           <FaPlus /> New Chat
         </button>
@@ -92,16 +98,19 @@ const RightPanel = ({
           <FaHistory /> Chat History
         </h2>
 
-        <div className="flex flex-col gap-2 overflow-y-scroll text-sm scrollbar-thin flex-1">
+        <div className="flex flex-col gap-2 overflow-y-scroll text-sm flex-1">
           {chatHistory.map((chat) => (
             <div
               key={chat._id}
-              onClick={() => setCurrentChatId(chat._id)}
+              onClick={() => {
+                setCurrentChatId(chat._id);
+                navigate(`/dashboard/${chat._id}`);
+              }}
               className={`p-2 rounded-3xl cursor-pointer ${
-                chat._id === currentChatId ? "bg-teal-900" : "hover:bg-teal-800"
+                chat._id === currentChatId ? "bg-teal-900" : "hover:bg-teal-700"
               }`}
             >
-              <p>{chat.title}</p>
+              <p>{chat.title || "Untitled Chat"}</p>
             </div>
           ))}
         </div>

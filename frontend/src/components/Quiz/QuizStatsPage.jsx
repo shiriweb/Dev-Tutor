@@ -7,7 +7,6 @@ const QuizStatsPage = () => {
   const { loading, setLoading } = useContext(QuizContext);
   const [quizStats, setQuizStats] = useState([]);
   const navigate = useNavigate();
-  const scrollRef = useRef(null); // for auto-scroll
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -26,8 +25,6 @@ const QuizStatsPage = () => {
     };
     fetchStats();
   }, [setLoading]);
-
-
 
   const totalQuizzes = quizStats.length;
   const topicsStudied = [...new Set(quizStats.map((q) => q.topic))].length;
@@ -79,15 +76,16 @@ const QuizStatsPage = () => {
             </p>
           </div>
         ))}
-
       </div>
 
-      <button
-        className=" bg-gray-600 hover:bg-gray-700 text-white font-semibold p-2 rounded mt-2 w-40"
-        onClick={() => navigate("/dashboard")}
-      >
-        Back to Dashboard
-      </button>
+      <div className="flex  mt-4">
+        <button
+          className="bg-teal-800 hover:bg-teal-900 text-white font-semibold p-2 rounded shadow-md "
+          onClick={() => navigate("/dashboard")}
+        >
+          Back to Dashboard
+        </button>
+      </div>
     </div>
   );
 };

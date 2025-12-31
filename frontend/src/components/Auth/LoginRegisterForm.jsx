@@ -31,14 +31,12 @@ const LoginRegisterForm = ({ setToken, token }) => {
 
   const formSubmission = async (e) => {
     e.preventDefault();
-
     try {
       if (currentState === "Sign Up") {
         if (password !== confirmPassword) {
           toast.error("Passwords do not match");
           return;
         }
-
         const response = await axios.post("/api/auth/register", {
           username,
           email,

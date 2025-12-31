@@ -9,7 +9,6 @@ const Footer = () => {
           Dev<span className="text-red-500">Tutor</span>
         </div>
 
-        {/* Links */}
         <div className="flex gap-6 font-bold">
           <a href="/" className="hover:text-red-500">
             Home
@@ -25,14 +24,7 @@ const Footer = () => {
           </Link>
         </div>
 
-        {/* Social Icons (optional) */}
-        <div className="flex gap-4 text-xl">
-          {/* <FaFacebook className="hover:text-red-500" />
-          <FaTwitter className="hover:text-red-500" />
-          <FaLinkedin className="hover:text-red-500" /> */}
-        </div>
 
-        {/* Copyright */}
         <div className="text-sm text-gray-300 text-center">
           © 2025 DevTutor. All rights reserved.
         </div>

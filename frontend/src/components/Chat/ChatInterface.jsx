@@ -12,30 +12,17 @@ const ChatInterface = ({
   currentChatId,
   loading,
   setLoading,
+  fetchChats,
 }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // Log current chat ID whenever it changes
-  useEffect(() => {
-    console.log("Current Chat ID changed:", currentChatId);
-  }, [currentChatId]);
-
-  // Fetch messages for the current chat
   useEffect(() => {
     const fetchMessages = async () => {
-      console.log("Selected Topic:", selectedTopic);
-      if (!selectedTopic) return;
-
       if (!currentChatId) {
-        setMessages([
-          {
-            sender: "assistant",
-            content: "Hello! I am Dev-Tutor. How can I help you?",
-          },
-        ]);
+        setMessages([]);
         return;
       }
 
@@ -43,27 +30,16 @@ const ChatInterface = ({
         const res = await axios.get(`/api/chats/${currentChatId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const data = res.data;
 
-        if (!data.messages || data.messages.length === 0) {
-          setMessages([
-            {
-              sender: "assistant",
-              content: "Hello! I am Dev-Tutor. How can I help you?",
-            },
-          ]);
-        } else {
-          setMessages(data.messages);
-        }
+        setMessages(res.data.messages || []);
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
     };
 
     fetchMessages();
-  }, [currentChatId, token, selectedTopic]);
+  }, [currentChatId, token]);
 
-  // Scroll to bottom when messages update
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -74,8 +50,6 @@ const ChatInterface = ({
     const messageContent = newMessage;
     setNewMessage("");
     setIsTyping(true);
-
-    // Optimistically show user's message
     setMessages((prev) => [
       ...prev,
       { sender: "user", content: messageContent },
@@ -85,29 +59,22 @@ const ChatInterface = ({
       let res;
 
       if (currentChatId) {
-        // Existing chat → add message
         res = await axios.post(
           `/api/chats/${currentChatId}/messages`,
           { content: messageContent },
           { headers: { Authorization: `Bearer ${token}` } }
         );
       } else {
-        // No chat yet → create new chat
         res = await axios.post(
           "/api/chats",
           { topic: selectedTopic, content: messageContent },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-
-        const newChatId = res.data.chat._id;
-        setCurrentChatId(newChatId); // update state
-        console.log("New Chat Created with ID:", newChatId);
+        setCurrentChatId(res.data.chat._id);
       }
 
-      // Log chat ID from backend
-      console.log("Chat ID from backend:", res.data.chat._id);
-
       setMessages(res.data.chat.messages);
+      await fetchChats(selectedTopic);
     } catch (error) {
       console.error("Error sending message:", error);
     } finally {
@@ -118,67 +85,52 @@ const ChatInterface = ({
   return (
     <div className="flex-1 flex flex-col p-2 w-full bg-gradient-to-b from-teal-800 via-teal-700 to-teal-900 rounded-2xl shadow-lg ml-1">
       <h2 className="text-white ml-2 mb-2 font-semibold">
-        Topic : {selectedTopic}
+        Topic: {selectedTopic}
       </h2>
+
       <div className="flex-1 overflow-y-scroll text-sm scrollbar-thin">
+        {messages.length === 0 && !isTyping && (
+          <div className="flex justify-start">
+            <div className="bg-white p-2 rounded-xl shadow-md mb-2">
+              Hello! I am Dev-Tutor. How can I help you?
+            </div>
+          </div>
+        )}
+
         {messages.map((msg, index) => (
           <div
             key={index}
             className={`flex ${
               msg.sender === "user" ? "justify-end" : "justify-start"
-            }  w-full`}
+            } w-full`}
           >
             <div
               className={`p-2 rounded-xl shadow-md mb-2 ${
                 msg.sender === "user"
-                  ? "bg-teal-300 text-teal-900 0 max-w-[60%]"
-                  : "bg-white "
+                  ? "bg-teal-300 text-teal-900 max-w-[60%]"
+                  : "bg-white"
               }`}
             >
               {msg.sender === "assistant" ? (
-                <div className="">
-                  <ReactMarkdown
-                    components={{
-                      code({ inline, children }) {
-                        return inline ? (
-                          <code className="bg-gray-700 text-yellow-300 px-1 rounded">
-                            {children}
-                          </code>
-                        ) : (
-                          <pre className="bg-gray-800 text-green-300 p-4 rounded-lg overflow-x-auto shadow-md">
-                            <code className="font-mono">{children}</code>
-                          </pre>
-                        );
-                      },
-                      p({ children }) {
-                        return (
-                          <p className="mb-2 leading-relaxed">{children}</p>
-                        );
-                      },
-                      li({ children }) {
-                        return (
-                          <li className="ml-6 mb-1 list-disc">{children}</li>
-                        );
-                      },
-                      h1({ children }) {
-                        return (
-                          <h1 className="text-xl font-bold mt-4 mb-2">
-                            {children}
-                          </h1>
-                        );
-                      },
-                      h2({ children }) {
-                        return (
-                          <h2 className="text-lg font-semibold mt-3 mb-2">
-                            {children}
-                          </h2>
-                        );
-                      },
-                    }}
-                  >
-                    {msg.content}
-                  </ReactMarkdown>
-                </div>
+                <ReactMarkdown
+                  components={{
+                    code({ inline, children }) {
+                      if (inline) return <>{children}</>;
+                      return (
+                        <pre className="bg-gray-800 text-white p-3 rounded-lg overflow-x-auto my-2">
+                          <code className="font-mono text-sm">{children}</code>
+                        </pre>
+                      );
+                    },
+
+                    p({ children }) {
+                      const text = String(children);
+                      return <p>{children}</p>;
+                    },
+                  }}
+                >
+                  {msg.content}
+                </ReactMarkdown>
               ) : (
                 msg.content
               )}
@@ -189,11 +141,8 @@ const ChatInterface = ({
         {isTyping && (
           <div className="flex justify-start">
             <div className="p-2 rounded-xl max-w-xs bg-gray-200 text-gray-900 italic flex items-center gap-2">
-              <AiOutlineLoading3Quarters
-                size={22}
-                className="animate-spin text-gray-400"
-              />
-              AI is typing...
+              <AiOutlineLoading3Quarters className="animate-spin" /> AI is
+              thinking...
             </div>
           </div>
         )}
@@ -207,13 +156,13 @@ const ChatInterface = ({
           placeholder="Ask Anything"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          className={`flex-1 p-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400`}
+          className="flex-1 p-2 border rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-400"
           onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
           disabled={isTyping}
         />
         <button
           onClick={handleSendMessage}
-          className="bg-teal-400 p-2 rounded-lg hover:bg-[#f5f5f5]"
+          className="bg-teal-400 p-2 rounded-lg"
         >
           <FaPaperPlane />
         </button>
